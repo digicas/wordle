@@ -52,6 +52,7 @@ enum Language {
   final String code;
 
   Language nextLanguge(List<Language> langs) {
+    if (langs.length <= 1) return this;
     var index = langs.indexOf(this) + 1;
     index = index >= allLangs.length ? 0 : index;
     return allLangs.elementAt(index);
