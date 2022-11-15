@@ -1,0 +1,380 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wordle/game/view/widgets/keyboard.dart';
+import 'package:wordle/game/view/widgets/language_button.dart';
+import 'package:wordle/game/view/widgets/post_game_container.dart';
+import 'package:wordle/game/view/widgets/wordle_tile.dart';
+import 'package:wordle/models/answer_word.dart';
+import 'package:wordle/models/wordle_input.dart';
+
+class GameScreen extends StatefulWidget {
+  const GameScreen({super.key});
+
+  static List<Language> activeLangs = [
+    Language.fromCode('de'),
+    Language.fromCode('cs'),
+    Language.fromCode('en'),
+  ];
+
+  static void setActiveLanguagesFromCodes(List<String> codes) {
+    activeLangs = codes.map(Language.fromCode).toList();
+  }
+
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  final answerWords = <AnswerWord>[];
+  final guessWords = <String>[];
+  final scrollController = ScrollController();
+  final hintGlobalKey = GlobalKey();
+
+  Language selectedLang = Language.german;
+
+  AnswerWord? selectedWord;
+
+  late List<WordleInput> inputLetters = generateInputs();
+  List<String> disabledLetters = [];
+
+  int guessedWordsCount = 0;
+
+  bool isHintVisible = false;
+
+  bool gameWon = false;
+  bool gameLost = false;
+
+  @override
+  void initState() {
+    super.initState();
+    readJson();
+    _fetchCount();
+  }
+
+  // ignore: unused_element
+
+  Future<void> readJson() async {
+    final answersFetch = await rootBundle
+        .loadString('packages/wordle/assets/answer_words_$selectedLang.json');
+    final answersResult = await json.decode(answersFetch) as List<dynamic>;
+    answerWords.clear();
+    for (final word in answersResult) {
+      answerWords.add(AnswerWord.fromJson(word));
+    }
+
+    final guessesFetch = await rootBundle
+        .loadString('packages/wordle/assets/guess_words_$selectedLang.json');
+    final guessesResult = await json.decode(guessesFetch) as List<dynamic>;
+
+    guessWords
+      ..clear()
+      ..addAll(List.from(guessesResult));
+
+    selectRandomWord();
+  }
+
+  Future<void> changeLanguage(Language lang) async {
+    selectedLang = lang;
+    await readJson();
+    setState(resetGame);
+  }
+
+  void resetGame() {
+    gameWon = false;
+    gameLost = false;
+    selectRandomWord();
+    inputLetters = generateInputs();
+  }
+
+  void selectRandomWord() {
+    setState(() {
+      setState(() {
+        selectedWord = (answerWords..shuffle()).first;
+        answerWords.shuffle();
+      });
+    });
+  }
+
+  List<WordleInput> generateInputs() {
+    return List.generate(
+      36,
+      (_) => WordleInput(),
+    );
+  }
+
+  void inputLetter(String letter) {
+    setState(() {
+      if (letter != '⌫') {
+        if (!isWordComplete) {
+          inputLetters.firstWhere((i) => i.letter == null).letter = letter;
+        }
+      } else {
+        inputLetters
+            .where((i) => i.letter != null && i.state == TileState.empty)
+            .last
+            .letter = null;
+      }
+    });
+  }
+
+  void submitWord() {
+    //* get current word from input
+    final currentWordInputs = inputLetters
+        .where((i) => i.letter != null && i.state == TileState.empty)
+        .toList();
+
+    //* check if word length is correct
+    if (currentWordInputs.length != 6) {
+      return;
+    }
+
+    //* check if word is valid
+
+    if (![...answerWords.map((g) => g.word), ...guessWords]
+        .contains(currentWordInputs.map((e) => e.letter).join())) {
+      for (final input in currentWordInputs) {
+        input.letter = null;
+      }
+      setState(() {});
+      return;
+    }
+
+    for (final input in currentWordInputs) {
+      //* check if guessed word contains input letter
+      if (selectedWord!.letters.contains(input.letter)) {
+        final index = currentWordInputs.indexOf(input);
+        input.state = TileState.wrongIndex;
+        //* check if index of letter is correct
+        if (selectedWord!.letters[index] == input.letter) {
+          input.state = TileState.correct;
+        }
+      } else {
+        //* guess word does not contain input letter
+        disabledLetters.add(input.letter!);
+        input.state = TileState.wrong;
+      }
+    }
+    //* check is all input letters are correct
+    for (final input in currentWordInputs) {
+      if (input.state != TileState.correct) {
+        if (hasLost) {
+          gameLost = true;
+        }
+        setState(() {});
+        return;
+      }
+    }
+    //* if all letter are correct show win screen
+    setState(() => gameWon = true);
+    _incrementCount();
+  }
+
+  Future<void> _fetchCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    try {
+      final count = prefs.getInt('correctGuessCount');
+      if (count == null) {
+        await prefs.setInt('correctGuessCount', 0);
+      }
+      setState(
+        () => guessedWordsCount = prefs.getInt('correctGuessCount')!,
+      );
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> _incrementCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(
+      () => guessedWordsCount = (prefs.getInt('correctGuessCount') ?? 0) + 1,
+    );
+    await prefs.setInt('correctGuessCount', guessedWordsCount);
+  }
+
+  bool get isLoading => selectedWord == null;
+
+  bool get hasLost {
+    return inputLetters.length ==
+        inputLetters.where((i) => i.state != TileState.empty).length;
+  }
+
+  bool get isWordComplete {
+    final filledLettersCount = inputLetters
+        .where((i) => i.letter != null && i.state == TileState.empty)
+        .length;
+    return filledLettersCount % 6 == 0 && filledLettersCount != 0;
+  }
+
+  bool isTileFocused(int index) {
+    if (inputLetters.where((i) => i.letter == null).isEmpty) {
+      return false;
+    }
+    return index ==
+            inputLetters.indexOf(
+              inputLetters.firstWhere(
+                (i) => i.letter == null,
+              ),
+            ) &&
+        !isWordComplete &&
+        !gameWon &&
+        !gameLost;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+      body: SingleChildScrollView(
+        controller: scrollController,
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: screenWidth > 1078
+              ? EdgeInsets.symmetric(
+                  vertical: 32,
+                  horizontal: screenWidth * 0.35,
+                )
+              : screenWidth > 768
+                  ? EdgeInsets.symmetric(
+                      vertical: 24,
+                      horizontal: screenWidth * 0.2,
+                    )
+                  : const EdgeInsets.all(16),
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              size: 32,
+                              color: Colors.orangeAccent,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '$guessedWordsCount',
+                              style: const TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            LanguageButton(
+                              activeLangs: GameScreen.activeLangs,
+                              selectedLang: selectedLang,
+                              onChangeLang: changeLanguage,
+                            ),
+                            const SizedBox(width: 4),
+                            GestureDetector(
+                              onTap: () =>
+                                  Navigator.of(context).popAndPushNamed('/'),
+                              child: const Icon(Icons.menu, size: 32),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    if (kDebugMode) Text('word: ${selectedWord!.word}'),
+                    GridView.count(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      crossAxisCount: 6,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                      children: List.generate(
+                        36,
+                        (index) => WordleTile(
+                          letter: inputLetters[index].letter,
+                          isFocused: isTileFocused(index),
+                          state: inputLetters[index].state,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    if (gameWon || gameLost)
+                      PostGameContainer(
+                        onContinue: resetGame,
+                        gameWon: gameWon,
+                        answerWord: selectedWord!,
+                      )
+                    else
+                      Keyboard(
+                        onTap: inputLetter,
+                        onSubmitWord: submitWord,
+                        disabledLetters: disabledLetters,
+                      ),
+                    const SizedBox(height: 32),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isHintVisible = !isHintVisible;
+
+                          // ignore: cast_nullable_to_non_nullable
+                          final offset = (hintGlobalKey.currentContext
+                                  ?.findRenderObject() as RenderBox)
+                              .localToGlobal(Offset.zero)
+                              .dy;
+                          scrollController.animateTo(
+                            isHintVisible ? offset - 100 : 0,
+                            duration: const Duration(milliseconds: 700),
+                            curve: Curves.easeInOut,
+                          );
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffE4E4E4),
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        child: const Text(
+                          '💡',
+                          style: TextStyle(
+                            fontSize: 32,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      key: hintGlobalKey,
+                      width: 1,
+                      height: 1,
+                    ),
+                    if (isHintVisible)
+                      GridView.count(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        crossAxisCount: 3,
+                        children: List.generate(
+                          answerWords.length,
+                          (index) => Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Text(
+                              answerWords[index].word,
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
+}
