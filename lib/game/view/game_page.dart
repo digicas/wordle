@@ -25,6 +25,8 @@ class GameScreen extends StatefulWidget {
     activeLangs = codes.map(Language.fromCode).toList();
   }
 
+  static Language getDefaultLang() => activeLangs.first;
+
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
@@ -35,7 +37,7 @@ class _GameScreenState extends State<GameScreen> {
   final scrollController = ScrollController();
   final hintGlobalKey = GlobalKey();
 
-  Language selectedLang = Language.german;
+  late Language selectedLang = GameScreen.getDefaultLang();
 
   AnswerWord? selectedWord;
 
@@ -287,6 +289,7 @@ class _GameScreenState extends State<GameScreen> {
                       ],
                     ),
                     if (kDebugMode) Text('word: ${selectedWord!.word}'),
+                    if (!kDebugMode) const SizedBox(height: 12),
                     GridView.count(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,

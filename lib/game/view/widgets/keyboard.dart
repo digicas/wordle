@@ -171,6 +171,7 @@ class KeyboardTile extends StatelessWidget {
         child: Text(
           char != 'ß' ? char.toUpperCase() : 'ẞ',
           style: TextStyle(
+            fontFamily: char == '⌫' ? 'Roboto' : 'Lato',
             fontSize: screenWidth > 1078
                 ? 24
                 : screenWidth > 768
