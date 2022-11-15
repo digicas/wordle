@@ -13,19 +13,9 @@ import 'package:wordle/models/answer_word.dart';
 import 'package:wordle/models/wordle_input.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+  const GameScreen({super.key, required this.activeLangs});
 
-  static List<Language> activeLangs = [
-    Language.fromCode('de'),
-    Language.fromCode('cs'),
-    Language.fromCode('en'),
-  ];
-
-  static void setActiveLanguagesFromCodes(List<String> codes) {
-    activeLangs = codes.map(Language.fromCode).toList();
-  }
-
-  static Language getDefaultLang() => activeLangs.first;
+  final List<Language> activeLangs;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -37,7 +27,7 @@ class _GameScreenState extends State<GameScreen> {
   final scrollController = ScrollController();
   final hintGlobalKey = GlobalKey();
 
-  late Language selectedLang = GameScreen.getDefaultLang();
+  late Language selectedLang = widget.activeLangs.first;
 
   AnswerWord? selectedWord;
 
@@ -274,7 +264,7 @@ class _GameScreenState extends State<GameScreen> {
                         Row(
                           children: [
                             LanguageButton(
-                              activeLangs: GameScreen.activeLangs,
+                              activeLangs: widget.activeLangs,
                               selectedLang: selectedLang,
                               onChangeLang: changeLanguage,
                             ),

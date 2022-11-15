@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wordle/game/view/game_page.dart';
 
 class LanguageButton extends StatelessWidget {
   const LanguageButton({
@@ -17,7 +16,7 @@ class LanguageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onChangeLang(
-        selectedLang.nextLanguge(),
+        selectedLang.nextLanguge(activeLangs),
       ),
       child: Container(
         padding: const EdgeInsets.all(4),
@@ -52,8 +51,8 @@ enum Language {
 
   final String code;
 
-  Language nextLanguge() {
-    var index = GameScreen.activeLangs.indexOf(this) + 1;
+  Language nextLanguge(List<Language> langs) {
+    var index = langs.indexOf(this) + 1;
     index = index >= allLangs.length ? 0 : index;
     return allLangs.elementAt(index);
   }
