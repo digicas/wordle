@@ -23,24 +23,22 @@ class WordleTile extends StatelessWidget {
             : screenWidth > 350
                 ? 24
                 : 16;
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: state.background,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(
-            color: isFocused ? Colors.blueAccent : Colors.transparent,
-            width: 3,
-          ),
+    return Container(
+      padding: const EdgeInsets.all(4),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: state.background,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: isFocused ? Colors.blueAccent : Colors.transparent,
+          width: 3,
         ),
-        child: Text(
-          letter != null ? letter!.toUpperCase() : ' ',
-          style: TextStyle(
-            fontSize: fontSize.toDouble(),
-            fontWeight: FontWeight.w600,
-          ),
+      ),
+      child: Text(
+        letter != null ? letter!.toUpperCase() : ' ',
+        style: TextStyle(
+          fontSize: fontSize.toDouble(),
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
