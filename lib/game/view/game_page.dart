@@ -312,7 +312,7 @@ class _GameScreenState extends State<GameScreen> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          showBottomSheet<void>(
+                          showModalBottomSheet<void>(
                             context: context,
                             backgroundColor: Colors.transparent,
                             builder: (context) => GridView.count(
