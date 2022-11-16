@@ -36,7 +36,7 @@ class _GameScreenState extends State<GameScreen> {
 
   int guessedWordsCount = 0;
 
-  bool isHintVisible = false;
+  // bool isHintVisible = false;
 
   bool gameWon = false;
   bool gameLost = false;
@@ -312,18 +312,40 @@ class _GameScreenState extends State<GameScreen> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          isHintVisible = !isHintVisible;
-
-                          // ignore: cast_nullable_to_non_nullable
-                          final offset = (hintGlobalKey.currentContext
-                                  ?.findRenderObject() as RenderBox)
-                              .localToGlobal(Offset.zero)
-                              .dy;
-                          scrollController.animateTo(
-                            isHintVisible ? offset - 100 : 0,
-                            duration: const Duration(milliseconds: 700),
-                            curve: Curves.easeInOut,
+                          showBottomSheet<void>(
+                            context: context,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => GridView.count(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              crossAxisCount: 3,
+                              children: List.generate(
+                                answerWords.length,
+                                (index) => Container(
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    answerWords[index].word,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           );
+                          // isHintVisible = !isHintVisible;
+
+                          // // ignore: cast_nullable_to_non_nullable
+                          // final offset = (hintGlobalKey.currentContext
+                          //         ?.findRenderObject() as RenderBox)
+                          //     .localToGlobal(Offset.zero)
+                          //     .dy;
+                          // scrollController.animateTo(
+                          //   isHintVisible ? offset - 100 : 0,
+                          //   duration: const Duration(milliseconds: 700),
+                          //   curve: Curves.easeInOut,
+                          // );
                         });
                       },
                       child: Container(
@@ -340,30 +362,12 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      key: hintGlobalKey,
-                      width: 1,
-                      height: 1,
-                    ),
-                    if (isHintVisible)
-                      GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        crossAxisCount: 3,
-                        children: List.generate(
-                          answerWords.length,
-                          (index) => Container(
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            child: Text(
-                              answerWords[index].word,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    // SizedBox(
+                    //   key: hintGlobalKey,
+                    //   width: 1,
+                    //   height: 1,
+                    // ),
+                    // if (isHintVisible)
                   ],
                 ),
         ),
