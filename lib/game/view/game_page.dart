@@ -310,44 +310,51 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                     const SizedBox(height: 32),
                     GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          showModalBottomSheet<void>(
-                            context: context,
-                            backgroundColor: Colors.white,
-                            builder: (context) => GridView.count(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              crossAxisCount: 3,
-                              children: List.generate(
-                                answerWords.length,
-                                (index) => Container(
-                                  width: double.infinity,
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    answerWords[index].word,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
+                      onTap: () => showModalBottomSheet<void>(
+                        isScrollControlled: true,
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: GridView.count(
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            crossAxisCount: 3,
+                            children: List.generate(
+                              answerWords.length,
+                              (index) => Container(
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  answerWords[index].word,
+                                  style: const TextStyle(
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
                             ),
-                          );
-                          // isHintVisible = !isHintVisible;
+                          ),
+                        ),
+                      ),
+                      // isHintVisible = !isHintVisible;
 
-                          // // ignore: cast_nullable_to_non_nullable
-                          // final offset = (hintGlobalKey.currentContext
-                          //         ?.findRenderObject() as RenderBox)
-                          //     .localToGlobal(Offset.zero)
-                          //     .dy;
-                          // scrollController.animateTo(
-                          //   isHintVisible ? offset - 100 : 0,
-                          //   duration: const Duration(milliseconds: 700),
-                          //   curve: Curves.easeInOut,
-                          // );
-                        });
-                      },
+                      // // ignore: cast_nullable_to_non_nullable
+                      // final offset = (hintGlobalKey.currentContext
+                      //         ?.findRenderObject() as RenderBox)
+                      //     .localToGlobal(Offset.zero)
+                      //     .dy;
+                      // scrollController.animateTo(
+                      //   isHintVisible ? offset - 100 : 0,
+                      //   duration: const Duration(milliseconds: 700),
+                      //   curve: Curves.easeInOut,
+                      // );
+                      //   });
+                      // },
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
