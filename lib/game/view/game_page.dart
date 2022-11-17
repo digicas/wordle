@@ -51,16 +51,16 @@ class _GameScreenState extends State<GameScreen> {
   // ignore: unused_element
 
   Future<void> readJson() async {
-    final answersFetch = await rootBundle
-        .loadString('packages/wordle/assets/answer_words_$selectedLang.json');
+    final answersFetch =
+        await rootBundle.loadString('answer_words_$selectedLang.json');
     final answersResult = await json.decode(answersFetch) as List<dynamic>;
     answerWords.clear();
     for (final word in answersResult) {
       answerWords.add(AnswerWord.fromJson(word));
     }
 
-    final guessesFetch = await rootBundle
-        .loadString('packages/wordle/assets/guess_words_$selectedLang.json');
+    final guessesFetch =
+        await rootBundle.loadString('guess_words_$selectedLang.json');
     final guessesResult = await json.decode(guessesFetch) as List<dynamic>;
 
     guessWords
@@ -312,49 +312,68 @@ class _GameScreenState extends State<GameScreen> {
                     GestureDetector(
                       onTap: () => showModalBottomSheet<void>(
                         isScrollControlled: true,
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
                           ),
-                          child: GridView.count(
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            crossAxisCount: 3,
-                            children: List.generate(
-                              answerWords.length,
-                              (index) => Container(
-                                width: double.infinity,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  answerWords[index].word,
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                        ),
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height,
+                          maxWidth: screenWidth > 576
+                              ? screenWidth * 0.5
+                              : screenWidth > 976
+                                  ? screenWidth * 0.3
+                                  : screenWidth - 48,
+                        ),
+                        context: context,
+                        builder: (context) => DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.white.withOpacity(0.8),
+                          ),
+                          child: Builder(
+                            builder: (context) {
+                              final chunks = <List<AnswerWord>>[];
+                              final chunkSize = answerWords.length ~/ 3;
+                              for (var i = 0;
+                                  i < answerWords.length;
+                                  i += chunkSize) {
+                                chunks.add(
+                                  answerWords.sublist(
+                                    i,
+                                    i + chunkSize > answerWords.length
+                                        ? answerWords.length
+                                        : i + chunkSize,
                                   ),
+                                );
+                              }
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: chunks
+                                      .map(
+                                        (ch) => Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: ch
+                                              .map((a) => Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(2),
+                                                    child: Text(a.word),
+                                                  ))
+                                              .toList(),
+                                        ),
+                                      )
+                                      .toList(),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           ),
                         ),
                       ),
-                      // isHintVisible = !isHintVisible;
-
-                      // // ignore: cast_nullable_to_non_nullable
-                      // final offset = (hintGlobalKey.currentContext
-                      //         ?.findRenderObject() as RenderBox)
-                      //     .localToGlobal(Offset.zero)
-                      //     .dy;
-                      // scrollController.animateTo(
-                      //   isHintVisible ? offset - 100 : 0,
-                      //   duration: const Duration(milliseconds: 700),
-                      //   curve: Curves.easeInOut,
-                      // );
-                      //   });
-                      // },
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -369,12 +388,6 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ),
                     ),
-                    // SizedBox(
-                    //   key: hintGlobalKey,
-                    //   width: 1,
-                    //   height: 1,
-                    // ),
-                    // if (isHintVisible)
                   ],
                 ),
         ),
