@@ -64,7 +64,10 @@ class Keyboard extends StatelessWidget {
               KeyboardTile(
                 onTap: onTap,
                 char: '⌫',
-                icon: const Icon(Icons.keyboard_backspace),
+                icon: const Icon(
+                  Icons.backspace_outlined,
+                  size: 24,
+                ),
               )
             ],
           ),
