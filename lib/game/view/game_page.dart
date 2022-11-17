@@ -314,7 +314,7 @@ class _GameScreenState extends State<GameScreen> {
                         setState(() {
                           showModalBottomSheet<void>(
                             context: context,
-                            backgroundColor: Colors.transparent,
+                            backgroundColor: Colors.white,
                             builder: (context) => GridView.count(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
