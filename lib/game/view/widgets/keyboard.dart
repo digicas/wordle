@@ -8,7 +8,7 @@ class Keyboard extends StatelessWidget {
     required this.onSubmitWord,
   });
 
-  static final specialChars = ['ä', 'ö', 'ü', 'ß', '⌫'];
+  static final specialChars = ['ä', 'ö', 'ü', 'ß'];
 
   static final chars = [
     'q',
@@ -61,6 +61,11 @@ class Keyboard extends StatelessWidget {
                   isCompact: false,
                 ),
               ),
+              KeyboardTile(
+                onTap: onTap,
+                char: '⌫',
+                icon: const Icon(Icons.keyboard_backspace),
+              )
             ],
           ),
         ),
@@ -129,10 +134,12 @@ class KeyboardTile extends StatelessWidget {
     required this.char,
     this.isCompact = true,
     this.isDisabled = false,
+    this.icon,
   });
 
   final void Function(String) onTap;
   final String char;
+  final Icon? icon;
   final bool isDisabled;
   final bool isCompact;
 
@@ -168,20 +175,20 @@ class KeyboardTile extends StatelessWidget {
               : const Color(0xffE4E4E4),
           borderRadius: BorderRadius.circular(isCompact ? 12 : 16),
         ),
-        child: Text(
-          char != 'ß' ? char.toUpperCase() : 'ẞ',
-          style: TextStyle(
-            fontFamily: char == '⌫' ? 'Roboto' : 'Lato',
-            fontSize: screenWidth > 1078
-                ? 24
-                : screenWidth > 768
-                    ? 22
-                    : screenWidth > 400
+        child: icon ??
+            Text(
+              char != 'ß' ? char.toUpperCase() : 'ẞ',
+              style: TextStyle(
+                fontSize: screenWidth > 1078
+                    ? 24
+                    : screenWidth > 768
                         ? 22
-                        : 18,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+                        : screenWidth > 400
+                            ? 22
+                            : 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
       ),
     );
   }
