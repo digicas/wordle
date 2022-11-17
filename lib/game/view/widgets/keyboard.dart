@@ -68,6 +68,7 @@ class Keyboard extends StatelessWidget {
                   Icons.backspace_outlined,
                   size: 24,
                 ),
+                isCompact: false,
               )
             ],
           ),
