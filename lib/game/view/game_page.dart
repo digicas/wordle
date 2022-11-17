@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wordle/game/view/widgets/keyboard.dart';
 import 'package:wordle/game/view/widgets/language_button.dart';
 import 'package:wordle/game/view/widgets/post_game_container.dart';
+import 'package:wordle/game/view/widgets/shake_animation.dart';
 import 'package:wordle/game/view/widgets/wordle_tile.dart';
 import 'package:wordle/models/answer_word.dart';
 import 'package:wordle/models/wordle_input.dart';
@@ -21,7 +22,7 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   final answerWords = <AnswerWord>[];
   final guessWords = <String>[];
   final scrollController = ScrollController();
@@ -32,6 +33,8 @@ class _GameScreenState extends State<GameScreen> {
   AnswerWord? selectedWord;
 
   late List<WordleInput> inputLetters = generateInputs();
+  late List<AnimationController> animationControllers;
+  late List<Animation<double>> shakeAnimations;
   List<String> disabledLetters = [];
 
   int guessedWordsCount = 0;
@@ -46,6 +49,26 @@ class _GameScreenState extends State<GameScreen> {
     super.initState();
     readJson();
     _fetchCount();
+    final animationsList = <Animation<double>>[];
+    animationControllers = List.generate(
+      36,
+      (index) {
+        final controller = AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 900),
+        );
+        animationsList.add(
+          Tween<double>(begin: 1, end: 0).animate(
+            CurvedAnimation(
+              parent: controller,
+              curve: Curves.bounceOut,
+            ),
+          ),
+        );
+        return controller;
+      },
+    );
+    shakeAnimations = animationsList;
   }
 
   // ignore: unused_element
@@ -130,6 +153,9 @@ class _GameScreenState extends State<GameScreen> {
     if (![...answerWords.map((g) => g.word), ...guessWords]
         .contains(currentWordInputs.map((e) => e.letter).join())) {
       for (final input in currentWordInputs) {
+        animationControllers.elementAt(inputLetters.indexOf(input))
+          ..reset()
+          ..forward();
         input.letter = null;
       }
       setState(() {});
@@ -288,10 +314,14 @@ class _GameScreenState extends State<GameScreen> {
                       mainAxisSpacing: 8,
                       children: List.generate(
                         36,
-                        (index) => WordleTile(
-                          letter: inputLetters[index].letter,
-                          isFocused: isTileFocused(index),
-                          state: inputLetters[index].state,
+                        (index) => ShakeAnimation(
+                          controller: animationControllers[index],
+                          animation: shakeAnimations[index],
+                          child: WordleTile(
+                            letter: inputLetters[index].letter,
+                            isFocused: isTileFocused(index),
+                            state: inputLetters[index].state,
+                          ),
                         ),
                       ),
                     ),
