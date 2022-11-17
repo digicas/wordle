@@ -51,16 +51,16 @@ class _GameScreenState extends State<GameScreen> {
   // ignore: unused_element
 
   Future<void> readJson() async {
-    final answersFetch =
-        await rootBundle.loadString('answer_words_$selectedLang.json');
+    final answersFetch = await rootBundle
+        .loadString('packages/wordle/assets/answer_words_$selectedLang.json');
     final answersResult = await json.decode(answersFetch) as List<dynamic>;
     answerWords.clear();
     for (final word in answersResult) {
       answerWords.add(AnswerWord.fromJson(word));
     }
 
-    final guessesFetch =
-        await rootBundle.loadString('guess_words_$selectedLang.json');
+    final guessesFetch = await rootBundle
+        .loadString('packages/wordle/assets/guess_words_$selectedLang.json');
     final guessesResult = await json.decode(guessesFetch) as List<dynamic>;
 
     guessWords
