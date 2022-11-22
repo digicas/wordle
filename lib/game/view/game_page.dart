@@ -281,6 +281,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           child: Container(
             margin: const EdgeInsets.only(top: 32),
             child: SingleChildScrollView(
+              primary: false,
+              physics: const NeverScrollableScrollPhysics(),
               child: Builder(
                 builder: (context) {
                   final chunks = <List<AnswerWord>>[];
