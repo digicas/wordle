@@ -270,7 +270,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 ),
               ),
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomSheet: BottomAppBar(
         elevation: 4,
         shape: const CircularNotchedRectangle(),
         color: Colors.white,
