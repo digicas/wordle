@@ -43,6 +43,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   bool gameWon = false;
   bool gameLost = false;
+  bool isHintVisible = false;
 
   @override
   void initState() {
@@ -248,6 +249,77 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      floatingActionButtonLocation: isHintVisible
+          ? FloatingActionButtonLocation.centerDocked
+          : FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => setState(() => isHintVisible = !isHintVisible),
+        backgroundColor:
+            isHintVisible ? Colors.redAccent : const Color(0xffE4E4E4),
+        elevation: 2,
+        child: isHintVisible
+            ? const Icon(
+                Icons.close,
+                color: Colors.white,
+                size: 32,
+              )
+            : const Text(
+                '💡',
+                style: TextStyle(
+                  fontSize: 32,
+                ),
+              ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 4,
+        shape: const CircularNotchedRectangle(),
+        color: Colors.white,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          height: isHintVisible ? MediaQuery.of(context).size.height / 2 : 0,
+          child: Container(
+            margin: const EdgeInsets.only(top: 32),
+            child: SingleChildScrollView(
+              child: Builder(
+                builder: (context) {
+                  final chunks = <List<AnswerWord>>[];
+                  final chunkSize = answerWords.length ~/ 3;
+                  for (var i = 0; i < answerWords.length; i += chunkSize) {
+                    chunks.add(
+                      answerWords.sublist(
+                        i,
+                        i + chunkSize > answerWords.length
+                            ? answerWords.length
+                            : i + chunkSize,
+                      ),
+                    );
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: chunks
+                          .map(
+                            (ch) => Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: ch
+                                  .map((a) => Padding(
+                                        padding: const EdgeInsets.all(2),
+                                        child: Text(a.word),
+                                      ))
+                                  .toList(),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         controller: scrollController,
         physics: const BouncingScrollPhysics(),
@@ -339,85 +411,85 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         disabledLetters: disabledLetters,
                       ),
                     const SizedBox(height: 32),
-                    GestureDetector(
-                      onTap: () => showModalBottomSheet<void>(
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
-                          ),
-                        ),
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height,
-                          maxWidth: screenWidth > 576
-                              ? screenWidth * 0.5
-                              : screenWidth > 976
-                                  ? screenWidth * 0.3
-                                  : screenWidth - 48,
-                        ),
-                        context: context,
-                        builder: (context) => DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: Colors.white.withOpacity(0.8),
-                          ),
-                          child: Builder(
-                            builder: (context) {
-                              final chunks = <List<AnswerWord>>[];
-                              final chunkSize = answerWords.length ~/ 3;
-                              for (var i = 0;
-                                  i < answerWords.length;
-                                  i += chunkSize) {
-                                chunks.add(
-                                  answerWords.sublist(
-                                    i,
-                                    i + chunkSize > answerWords.length
-                                        ? answerWords.length
-                                        : i + chunkSize,
-                                  ),
-                                );
-                              }
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: chunks
-                                      .map(
-                                        (ch) => Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: ch
-                                              .map((a) => Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(2),
-                                                    child: Text(a.word),
-                                                  ))
-                                              .toList(),
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xffE4E4E4),
-                          borderRadius: BorderRadius.circular(32),
-                        ),
-                        child: const Text(
-                          '💡',
-                          style: TextStyle(
-                            fontSize: 32,
-                          ),
-                        ),
-                      ),
-                    ),
+                    //   GestureDetector(
+                    //     onTap: () => showModalBottomSheet<void>(
+                    //       isScrollControlled: true,
+                    //       shape: const RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.only(
+                    //           topLeft: Radius.circular(16),
+                    //           topRight: Radius.circular(16),
+                    //         ),
+                    //       ),
+                    //       constraints: BoxConstraints(
+                    //         maxHeight: MediaQuery.of(context).size.height,
+                    //         maxWidth: screenWidth > 576
+                    //             ? screenWidth * 0.5
+                    //             : screenWidth > 976
+                    //                 ? screenWidth * 0.3
+                    //                 : screenWidth - 48,
+                    //       ),
+                    //       context: context,
+                    //       builder: (context) => DecoratedBox(
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(16),
+                    //           color: Colors.white.withOpacity(0.8),
+                    //         ),
+                    //         child: Builder(
+                    //           builder: (context) {
+                    //             final chunks = <List<AnswerWord>>[];
+                    //             final chunkSize = answerWords.length ~/ 3;
+                    //             for (var i = 0;
+                    //                 i < answerWords.length;
+                    //                 i += chunkSize) {
+                    //               chunks.add(
+                    //                 answerWords.sublist(
+                    //                   i,
+                    //                   i + chunkSize > answerWords.length
+                    //                       ? answerWords.length
+                    //                       : i + chunkSize,
+                    //                 ),
+                    //               );
+                    //             }
+                    //             return Padding(
+                    //               padding:
+                    //                   const EdgeInsets.symmetric(vertical: 16),
+                    //               child: Row(
+                    //                 mainAxisAlignment:
+                    //                     MainAxisAlignment.spaceEvenly,
+                    //                 children: chunks
+                    //                     .map(
+                    //                       (ch) => Column(
+                    //                         mainAxisSize: MainAxisSize.min,
+                    //                         children: ch
+                    //                             .map((a) => Padding(
+                    //                                   padding:
+                    //                                       const EdgeInsets.all(2),
+                    //                                   child: Text(a.word),
+                    //                                 ))
+                    //                             .toList(),
+                    //                       ),
+                    //                     )
+                    //                     .toList(),
+                    //               ),
+                    //             );
+                    //           },
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     child: Container(
+                    //       padding: const EdgeInsets.all(16),
+                    //       decoration: BoxDecoration(
+                    //         color: const Color(0xffE4E4E4),
+                    //         borderRadius: BorderRadius.circular(32),
+                    //       ),
+                    //       child: const Text(
+                    //         '💡',
+                    //         style: TextStyle(
+                    //           fontSize: 32,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
                   ],
                 ),
         ),
