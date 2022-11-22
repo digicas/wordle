@@ -277,12 +277,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-          height: isHintVisible ? 256 : 10,
+          height: isHintVisible
+              ? screenWidth > 768
+                  ? 512
+                  : 256
+              : 10,
           child: Container(
             margin: const EdgeInsets.only(top: 32),
             child: SingleChildScrollView(
-              primary: false,
-              physics: const NeverScrollableScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Builder(
                 builder: (context) {
                   final chunks = <List<AnswerWord>>[];
