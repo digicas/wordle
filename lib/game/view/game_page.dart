@@ -277,7 +277,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-          height: isHintVisible ? MediaQuery.of(context).size.height / 2 : 0,
+          height: isHintVisible ? MediaQuery.of(context).size.height / 2 : 10,
           child: Container(
             margin: const EdgeInsets.only(top: 32),
             child: SingleChildScrollView(
