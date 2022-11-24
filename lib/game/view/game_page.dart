@@ -103,6 +103,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   void resetGame() {
     gameWon = false;
     gameLost = false;
+    disabledLetters.clear();
     selectRandomWord();
     inputLetters = generateInputs();
   }
@@ -138,7 +139,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     });
   }
 
-  void submitWord() {
+  void submitWord(String _) {
     //* get current word from input
     final currentWordInputs = inputLetters
         .where((i) => i.letter != null && i.state == TileState.empty)
@@ -309,10 +310,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             (ch) => Column(
                               mainAxisSize: MainAxisSize.min,
                               children: ch
-                                  .map((a) => Padding(
-                                        padding: const EdgeInsets.all(2),
-                                        child: Text(a.word),
-                                      ))
+                                  .map(
+                                    (a) => Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: Text(a.word),
+                                    ),
+                                  )
                                   .toList(),
                             ),
                           )
@@ -366,11 +369,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         ),
                         Row(
                           children: [
-                            LanguageButton(
-                              activeLangs: widget.activeLangs,
-                              selectedLang: selectedLang,
-                              onChangeLang: changeLanguage,
-                            ),
+                            if (widget.activeLangs.length > 1)
+                              LanguageButton(
+                                activeLangs: widget.activeLangs,
+                                selectedLang: selectedLang,
+                                onChangeLang: changeLanguage,
+                              ),
                             const SizedBox(width: 4),
                             GestureDetector(
                               onTap: () =>
@@ -413,88 +417,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       Keyboard(
                         onTap: inputLetter,
                         onSubmitWord: submitWord,
+                        canSubmit: isWordComplete,
+                        hasSpecialChars: selectedLang == Language.german,
                         disabledLetters: disabledLetters,
                       ),
                     const SizedBox(height: 32),
-                    //   GestureDetector(
-                    //     onTap: () => showModalBottomSheet<void>(
-                    //       isScrollControlled: true,
-                    //       shape: const RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.only(
-                    //           topLeft: Radius.circular(16),
-                    //           topRight: Radius.circular(16),
-                    //         ),
-                    //       ),
-                    //       constraints: BoxConstraints(
-                    //         maxHeight: MediaQuery.of(context).size.height,
-                    //         maxWidth: screenWidth > 576
-                    //             ? screenWidth * 0.5
-                    //             : screenWidth > 976
-                    //                 ? screenWidth * 0.3
-                    //                 : screenWidth - 48,
-                    //       ),
-                    //       context: context,
-                    //       builder: (context) => DecoratedBox(
-                    //         decoration: BoxDecoration(
-                    //           borderRadius: BorderRadius.circular(16),
-                    //           color: Colors.white.withOpacity(0.8),
-                    //         ),
-                    //         child: Builder(
-                    //           builder: (context) {
-                    //             final chunks = <List<AnswerWord>>[];
-                    //             final chunkSize = answerWords.length ~/ 3;
-                    //             for (var i = 0;
-                    //                 i < answerWords.length;
-                    //                 i += chunkSize) {
-                    //               chunks.add(
-                    //                 answerWords.sublist(
-                    //                   i,
-                    //                   i + chunkSize > answerWords.length
-                    //                       ? answerWords.length
-                    //                       : i + chunkSize,
-                    //                 ),
-                    //               );
-                    //             }
-                    //             return Padding(
-                    //               padding:
-                    //                   const EdgeInsets.symmetric(vertical: 16),
-                    //               child: Row(
-                    //                 mainAxisAlignment:
-                    //                     MainAxisAlignment.spaceEvenly,
-                    //                 children: chunks
-                    //                     .map(
-                    //                       (ch) => Column(
-                    //                         mainAxisSize: MainAxisSize.min,
-                    //                         children: ch
-                    //                             .map((a) => Padding(
-                    //                                   padding:
-                    //                                       const EdgeInsets.all(2),
-                    //                                   child: Text(a.word),
-                    //                                 ))
-                    //                             .toList(),
-                    //                       ),
-                    //                     )
-                    //                     .toList(),
-                    //               ),
-                    //             );
-                    //           },
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     child: Container(
-                    //       padding: const EdgeInsets.all(16),
-                    //       decoration: BoxDecoration(
-                    //         color: const Color(0xffE4E4E4),
-                    //         borderRadius: BorderRadius.circular(32),
-                    //       ),
-                    //       child: const Text(
-                    //         '💡',
-                    //         style: TextStyle(
-                    //           fontSize: 32,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
                   ],
                 ),
         ),

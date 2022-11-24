@@ -35,10 +35,14 @@ class WordleTile extends StatelessWidget {
         ),
       ),
       child: Text(
-        letter != null ? letter!.toUpperCase() : ' ',
+        letter != null
+            ? letter != 'ẞ'
+                ? letter!.toUpperCase()
+                : 'ẞ'
+            : ' ',
         style: TextStyle(
           fontSize: fontSize.toDouble(),
-          fontWeight: FontWeight.w600,
+          fontWeight: letter == 'ẞ' ? FontWeight.w400 : FontWeight.w600,
         ),
       ),
     );

@@ -15,9 +15,7 @@ class LanguageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onChangeLang(
-        selectedLang.nextLanguge(activeLangs),
-      ),
+      onTap: () => onChangeLang(selectedLang.nextLanguge(activeLangs)),
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
@@ -51,11 +49,10 @@ enum Language {
 
   final String code;
 
-  Language nextLanguge(List<Language> langs) {
-    if (langs.length <= 1) return this;
-    var index = langs.indexOf(this) + 1;
-    index = index >= allLangs.length ? 0 : index;
-    return langs.elementAt(index);
+  Language nextLanguge(List<Language> activeLangs) {
+    var index = activeLangs.indexOf(this) + 1;
+    index = index >= activeLangs.length ? 0 : index;
+    return activeLangs.elementAt(index);
   }
 
   List<Language> get allLangs => Language.values;
