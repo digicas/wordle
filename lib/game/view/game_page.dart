@@ -201,7 +201,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     setState(() => gameWon = true);
     _incrementCount();
     widget.onFinished(
-      currentWordInputs.where((i) => i.state != TileState.empty).length,
+      currentWordInputs.where((i) => i.state != TileState.empty).length ~/ 6,
     );
   }
 

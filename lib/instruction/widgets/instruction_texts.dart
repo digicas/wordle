@@ -22,7 +22,7 @@ class InstructionTexts extends StatelessWidget {
             t,
             overflow: TextOverflow.clip,
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 20,
             ),
           ),
         );

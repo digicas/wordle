@@ -36,6 +36,7 @@ class PostGameContainer extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             '${answerWord.word} (${answerWord.czechTr})',
+            textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 24,
               color: Colors.white,
