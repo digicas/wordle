@@ -18,12 +18,12 @@ class GameScreen extends StatefulWidget {
     super.key,
     required this.activeLangs,
     required this.onFinished,
-    this.onLevelStarted,
+    required this.onLevelStarted,
   });
 
   final List<Language> activeLangs;
   final void Function(int) onFinished;
-  final VoidCallback? onLevelStarted;
+  final void Function() onLevelStarted;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -116,7 +116,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   void selectRandomWord() {
-    widget.onLevelStarted?.call();
+    widget.onLevelStarted();
     setState(() {
       setState(() {
         selectedWord = (answerWords..shuffle()).first;

@@ -11,11 +11,11 @@ class WordleGame extends StatelessWidget {
     super.key,
     required this.langs,
     required this.onFinished,
-    this.onLevelStarted,
+    required this.onLevelStarted,
   });
   final List<String> langs;
   final void Function(int) onFinished;
-  final VoidCallback? onLevelStarted;
+  final void Function() onLevelStarted;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +26,7 @@ class WordleGame extends StatelessWidget {
       routes: {
         '/game': (_) => GameScreen(
               activeLangs: langs.map(Language.fromCode).toList(),
+              onLevelStarted: onLevelStarted,
               onFinished: onFinished,
             ),
       },
