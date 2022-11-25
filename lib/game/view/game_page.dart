@@ -18,10 +18,12 @@ class GameScreen extends StatefulWidget {
     super.key,
     required this.activeLangs,
     required this.onFinished,
+    this.onLevelStarted,
   });
 
   final List<Language> activeLangs;
-  final void Function(bool) onFinished;
+  final void Function(int) onFinished;
+  final VoidCallback? onLevelStarted;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -114,6 +116,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   void selectRandomWord() {
+    widget.onLevelStarted?.call();
     setState(() {
       setState(() {
         selectedWord = (answerWords..shuffle()).first;
@@ -197,7 +200,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     //* if all letter are correct show win screen
     setState(() => gameWon = true);
     _incrementCount();
-    widget.onFinished(gameWon);
+    widget.onFinished(
+      currentWordInputs.where((i) => i.state != TileState.empty).length,
+    );
   }
 
   Future<void> _fetchCount() async {
