@@ -17,7 +17,10 @@ class InstructionTexts extends StatelessWidget {
       children: texts.map((t) {
         return Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: MediaQuery.of(context).size.width * 0.2,
+          ),
           child: Text(
             t,
             overflow: TextOverflow.clip,
