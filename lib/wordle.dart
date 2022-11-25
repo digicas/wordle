@@ -7,8 +7,9 @@ import 'package:wordle/game/view/widgets/language_button.dart';
 import 'package:wordle/instruction/view/insctructions_page.dart';
 
 class WordleGame extends StatelessWidget {
-  const WordleGame({super.key, required this.langs});
+  const WordleGame({super.key, required this.langs, required this.onFinished});
   final List<String> langs;
+  final void Function(bool) onFinished;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class WordleGame extends StatelessWidget {
       routes: {
         '/game': (_) => GameScreen(
               activeLangs: langs.map(Language.fromCode).toList(),
-              onFinished: (_) {},
+              onFinished: onFinished,
             ),
       },
     );
