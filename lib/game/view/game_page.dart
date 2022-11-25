@@ -14,9 +14,14 @@ import 'package:wordle/models/answer_word.dart';
 import 'package:wordle/models/wordle_input.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key, required this.activeLangs});
+  const GameScreen({
+    super.key,
+    required this.activeLangs,
+    required this.onFinished,
+  });
 
   final List<Language> activeLangs;
+  final void Function(bool) onFinished;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -192,6 +197,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     //* if all letter are correct show win screen
     setState(() => gameWon = true);
     _incrementCount();
+    widget.onFinished(gameWon);
   }
 
   Future<void> _fetchCount() async {

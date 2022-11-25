@@ -19,6 +19,7 @@ class WordleGame extends StatelessWidget {
       routes: {
         '/game': (_) => GameScreen(
               activeLangs: langs.map(Language.fromCode).toList(),
+              onFinished: (_) {},
             ),
       },
     );
