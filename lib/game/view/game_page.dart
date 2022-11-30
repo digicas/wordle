@@ -10,6 +10,7 @@ import 'package:wordle/game/view/widgets/language_button.dart';
 import 'package:wordle/game/view/widgets/post_game_container.dart';
 import 'package:wordle/game/view/widgets/shake_animation.dart';
 import 'package:wordle/game/view/widgets/wordle_tile.dart';
+
 import 'package:wordle/models/answer_word.dart';
 import 'package:wordle/models/wordle_input.dart';
 
@@ -42,7 +43,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   late List<WordleInput> inputLetters = generateInputs();
   late List<AnimationController> animationControllers;
   late List<Animation<double>> shakeAnimations;
-  List<String> disabledLetters = [];
+  Map<String, KeyState> keyStates = {};
 
   int guessedWordsCount = 0;
 
@@ -110,7 +111,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   void resetGame() {
     gameWon = false;
     gameLost = false;
-    disabledLetters.clear();
+    keyStates.clear();
     selectRandomWord();
     inputLetters = generateInputs();
   }
@@ -177,13 +178,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       if (selectedWord!.letters.contains(input.letter)) {
         final index = currentWordInputs.indexOf(input);
         input.state = TileState.wrongIndex;
+        keyStates[input.letter!] = KeyState.contains;
         //* check if index of letter is correct
         if (selectedWord!.letters[index] == input.letter) {
           input.state = TileState.correct;
+          keyStates[input.letter!] = KeyState.correct;
         }
       } else {
         //* guess word does not contain input letter
-        disabledLetters.add(input.letter!);
+        keyStates[input.letter!] = KeyState.wrong;
         input.state = TileState.wrong;
       }
     }
@@ -429,8 +432,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         onTap: inputLetter,
                         onSubmitWord: submitWord,
                         canSubmit: isWordComplete,
-                        hasSpecialChars: selectedLang == Language.german,
-                        disabledLetters: disabledLetters,
+                        keyStates: keyStates,
+                        specialCharsLang: selectedLang.code,
                       ),
                     const SizedBox(height: 32),
                   ],

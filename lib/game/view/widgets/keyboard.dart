@@ -3,14 +3,22 @@ import 'package:flutter/material.dart';
 class Keyboard extends StatelessWidget {
   const Keyboard({
     super.key,
-    required this.disabledLetters,
-    this.hasSpecialChars = false,
+    this.specialCharsLang,
     this.canSubmit = false,
+    required this.keyStates,
     required this.onTap,
     required this.onSubmitWord,
   });
 
-  static final specialChars = ['ä', 'ö', 'ü', 'ẞ', '⌫'];
+  static final germanChars = ['ä', 'ö', 'ü', 'ẞ'];
+
+  static final czechChars = ['ě', 'š', 'č', 'ř', 'ž', 'ý', 'á', 'í', 'é', 'ů'];
+
+  List<String> get specialChars {
+    if (specialCharsLang == null) return <String>[];
+    if (specialCharsLang == 'cs') return czechChars;
+    return germanChars;
+  }
 
   static final chars = [
     'q',
@@ -41,11 +49,15 @@ class Keyboard extends StatelessWidget {
     'm',
   ];
 
-  final List<String> disabledLetters;
-  final bool hasSpecialChars;
+  final String? specialCharsLang;
   final bool canSubmit;
+  final Map<String, KeyState> keyStates;
   final void Function(String) onTap;
   final void Function(String) onSubmitWord;
+
+  KeyState getStateByChar(String char) {
+    return keyStates[char] ?? KeyState.clear;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +66,14 @@ class Keyboard extends StatelessWidget {
         LayoutBuilder(
           builder: (context, constraints) => Row(
             children: [
-              ...(hasSpecialChars ? specialChars : [specialChars.last]).map(
+              ...(specialChars.isNotEmpty ? specialChars : [specialChars.last])
+                  .map(
                 (ch) => KeyboardTile(
                   width: constraints.maxWidth / specialChars.length,
                   char: ch,
-                  isDisabled: disabledLetters.contains(ch),
+                  state: getStateByChar(ch),
                   onTap: onTap,
-                  isCompact: false,
+                  isCompact: specialCharsLang != 'de',
                 ),
               ),
             ],
@@ -71,10 +84,10 @@ class Keyboard extends StatelessWidget {
             children: List.generate(
               10,
               (index) => KeyboardTile(
-                width: constraints.maxWidth / 10,
-                char: chars[index],
-                isDisabled: disabledLetters.contains(chars[index]),
                 onTap: onTap,
+                char: chars[index],
+                state: getStateByChar(chars[index]),
+                width: constraints.maxWidth / 10,
               ),
             ),
           ),
@@ -84,10 +97,10 @@ class Keyboard extends StatelessWidget {
             children: List.generate(
               9,
               (index) => KeyboardTile(
-                width: constraints.maxWidth / 9,
-                char: chars[index + 10],
-                isDisabled: disabledLetters.contains(chars[index + 10]),
                 onTap: onTap,
+                char: chars[index + 10],
+                state: getStateByChar(chars[index + 10]),
+                width: constraints.maxWidth / 9,
               ),
             ),
           ),
@@ -95,21 +108,27 @@ class Keyboard extends StatelessWidget {
         LayoutBuilder(
           builder: (context, constraints) => Row(
             children: [
+              KeyboardTile(
+                onTap: onTap,
+                char: '⌫',
+                state: KeyState.clear,
+                width: constraints.maxWidth / 9,
+              ),
               ...List.generate(
                 7,
                 (index) => KeyboardTile(
-                  width: constraints.maxWidth / 8,
-                  char: chars[index + 19],
-                  isDisabled: disabledLetters.contains(chars[index + 19]),
                   onTap: onTap,
+                  char: chars[index + 19],
+                  state: getStateByChar(chars[index + 19]),
+                  width: constraints.maxWidth / 9,
                 ),
               ),
               if (canSubmit)
                 KeyboardTile(
                   onTap: onSubmitWord,
-                  char: '✅',
-                  color: Colors.transparent,
-                  width: constraints.maxWidth / 8,
+                  char: '⏎',
+                  state: KeyState.clear,
+                  width: constraints.maxWidth / 9,
                 ),
             ],
           ),
@@ -124,18 +143,16 @@ class KeyboardTile extends StatelessWidget {
     super.key,
     required this.onTap,
     required this.char,
-    this.isCompact = true,
-    this.isDisabled = false,
+    required this.state,
     required this.width,
-    this.color,
+    this.isCompact = true,
   });
 
   final void Function(String) onTap;
   final String char;
   final double width;
-  final bool isDisabled;
   final bool isCompact;
-  final Color? color;
+  final KeyState state;
 
   double _getSize(double s) {
     if (s > 768 && s < 1078) {
@@ -158,7 +175,7 @@ class KeyboardTile extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: isDisabled ? null : () => onTap(char),
+      onTap: () => onTap(char),
       child: SizedBox(
         width: width,
         child: Container(
@@ -169,9 +186,13 @@ class KeyboardTile extends StatelessWidget {
           height: _getSize(screenWidth),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isDisabled
-                ? Colors.black.withOpacity(0.3)
-                : color ?? const Color(0xffE4E4E4),
+            color: state == KeyState.correct
+                ? Colors.green
+                : state == KeyState.contains
+                    ? Colors.orange
+                    : state == KeyState.wrong
+                        ? const Color(0xffC4C4C4)
+                        : const Color(0xffE4E4E4),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
@@ -185,10 +206,18 @@ class KeyboardTile extends StatelessWidget {
                           ? 22
                           : 18,
               fontWeight: FontWeight.w500,
+              fontFamily: 'Roboto',
             ),
           ),
         ),
       ),
     );
   }
+}
+
+enum KeyState {
+  clear,
+  wrong,
+  contains,
+  correct;
 }
