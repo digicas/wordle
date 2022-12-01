@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class WordleTile extends StatelessWidget {
+class WordleTile extends StatefulWidget {
   const WordleTile({
     super.key,
     this.letter,
@@ -13,6 +13,40 @@ class WordleTile extends StatelessWidget {
   final bool isFocused;
 
   @override
+  State<WordleTile> createState() => _WordleTileState();
+}
+
+class _WordleTileState extends State<WordleTile>
+    with SingleTickerProviderStateMixin {
+  final duration = const Duration(milliseconds: 1000);
+  final curve = Curves.bounceOut;
+  late final AnimationController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      vsync: this,
+      duration: duration,
+    )
+      ..forward()
+      ..addListener(() {
+        if (controller.isCompleted) {
+          controller.reverse();
+        }
+        if (controller.isDismissed) {
+          controller.forward();
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -23,26 +57,43 @@ class WordleTile extends StatelessWidget {
             : screenWidth > 350
                 ? 24
                 : 16;
-    return Container(
-      padding: const EdgeInsets.all(4),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: state.background,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: isFocused ? Colors.blueAccent : Colors.transparent,
-          width: 3,
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) => Container(
+        padding: const EdgeInsets.all(4),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color:
+              widget.isFocused ? Colors.transparent : widget.state.background,
+          borderRadius: BorderRadius.circular(4),
+          // border: Border.all(
+          //   color: isFocused ? Colors.blueAccent : Colors.transparent,
+          //   width: 3,
+          // ),
+          boxShadow: widget.isFocused
+              ? [
+                  BoxShadow(
+                    color: Colors.blueAccent.withOpacity(0.5),
+                  ),
+                  BoxShadow(
+                    color: widget.state.background,
+                    spreadRadius: -6 * controller.value,
+                    blurRadius: 10 * controller.value,
+                  ),
+                ]
+              : [],
         ),
-      ),
-      child: Text(
-        letter != null
-            ? letter != 'ẞ'
-                ? letter!.toUpperCase()
-                : 'ẞ'
-            : ' ',
-        style: TextStyle(
-          fontSize: fontSize.toDouble(),
-          fontWeight: letter == 'ẞ' ? FontWeight.w400 : FontWeight.w600,
+        child: Text(
+          widget.letter != null
+              ? widget.letter != 'ẞ'
+                  ? widget.letter!.toUpperCase()
+                  : 'ẞ'
+              : ' ',
+          style: TextStyle(
+            fontSize: fontSize.toDouble(),
+            fontWeight:
+                widget.letter == 'ẞ' ? FontWeight.w400 : FontWeight.w600,
+          ),
         ),
       ),
     );
