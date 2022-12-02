@@ -79,15 +79,43 @@ class _KeyboardState extends State<Keyboard> {
   }) {
     setState(() {
       zoomedChar = char;
-      zoomRow = row;
+      zoomRow =
+          widget.specialCharsLang != 'de' && widget.specialCharsLang != 'cs'
+              ? row != null
+                  ? row - 1
+                  : null
+              : row;
       zoomCol = col;
       currentKeyWidth = currentRowKeyWidth;
       biggerKey = bigKey;
     });
   }
 
-  double get zoomY {
-    return ((zoomRow! - 1) * 40) - (biggerKey ? 80 : 60);
+  double _getSize(double s) {
+    if (s > 768 && s < 1078) {
+      return 40;
+    }
+
+    if (s > 1078) {
+      return 36;
+    }
+
+    if (s > 400 && s < 768) {
+      return 32;
+    }
+
+    return 28;
+  }
+
+  double zoomY(double s) {
+    var x = 0 as double;
+    if (zoomRow! - 1 > 0) {
+      x = (zoomRow! - 1) * _getSize(s);
+    } else {}
+    x -= biggerKey ? 80 : 60;
+
+    if (widget.specialCharsLang != 'de') x -= 20;
+    return x;
   }
 
   double get zoomX {
@@ -105,37 +133,35 @@ class _KeyboardState extends State<Keyboard> {
       children: [
         Column(
           children: [
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final width = constraints.maxWidth / specialChars.length;
-                return Row(
-                  children: [
-                    ...(specialChars.isNotEmpty
-                            ? specialChars
-                            : [specialChars.last])
-                        .map(
-                      (ch) => ZoomHitbox(
-                        onEnter: () => setCurrentZoomChar(
-                          char: ch,
-                          row: 1,
-                          col: specialChars.indexOf(ch),
-                          currentRowKeyWidth: width,
-                          bigKey: true,
-                        ),
-                        onLeave: setCurrentZoomChar,
-                        child: KeyboardTile(
-                          onTap: widget.onTap,
-                          char: ch,
-                          state: getStateByChar(ch),
-                          isCompact: widget.specialCharsLang != 'de',
-                          width: width,
+            if (specialChars.isNotEmpty)
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final width = constraints.maxWidth / specialChars.length;
+                  return Row(
+                    children: [
+                      ...specialChars.map(
+                        (ch) => ZoomHitbox(
+                          onEnter: () => setCurrentZoomChar(
+                            char: ch,
+                            row: 1,
+                            col: specialChars.indexOf(ch),
+                            currentRowKeyWidth: width,
+                            bigKey: widget.specialCharsLang == 'de',
+                          ),
+                          onLeave: setCurrentZoomChar,
+                          child: KeyboardTile(
+                            onTap: widget.onTap,
+                            char: ch,
+                            state: getStateByChar(ch),
+                            isCompact: widget.specialCharsLang != 'de',
+                            width: width,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
+                    ],
+                  );
+                },
+              ),
             LayoutBuilder(
               builder: (context, constraints) {
                 final width = constraints.maxWidth / 10;
@@ -145,7 +171,7 @@ class _KeyboardState extends State<Keyboard> {
                     (index) => ZoomHitbox(
                       onEnter: () => setCurrentZoomChar(
                         char: Keyboard.chars[index],
-                        row: widget.specialCharsLang != null ? 2 : 1,
+                        row: 2,
                         col: index,
                         currentRowKeyWidth: width,
                       ),
@@ -170,7 +196,7 @@ class _KeyboardState extends State<Keyboard> {
                     (index) => ZoomHitbox(
                       onEnter: () => setCurrentZoomChar(
                         char: Keyboard.chars[index + 10],
-                        row: widget.specialCharsLang != null ? 3 : 2,
+                        row: 3,
                         col: index,
                         currentRowKeyWidth: width,
                       ),
@@ -194,7 +220,7 @@ class _KeyboardState extends State<Keyboard> {
                     ZoomHitbox(
                       onEnter: () => setCurrentZoomChar(
                         char: '⌫',
-                        row: widget.specialCharsLang != null ? 4 : 3,
+                        row: 4,
                         col: 0,
                         currentRowKeyWidth: width,
                       ),
@@ -211,7 +237,7 @@ class _KeyboardState extends State<Keyboard> {
                       (index) => ZoomHitbox(
                         onEnter: () => setCurrentZoomChar(
                           char: Keyboard.chars[index + 19],
-                          row: widget.specialCharsLang != null ? 4 : 3,
+                          row: 4,
                           col: index + 1,
                           currentRowKeyWidth: width,
                         ),
@@ -228,7 +254,7 @@ class _KeyboardState extends State<Keyboard> {
                       ZoomHitbox(
                         onEnter: () => setCurrentZoomChar(
                           char: '⏎',
-                          row: widget.specialCharsLang != null ? 4 : 3,
+                          row: 4,
                           col: 8,
                           currentRowKeyWidth: width,
                         ),
@@ -248,7 +274,7 @@ class _KeyboardState extends State<Keyboard> {
         ),
         if (zoomedChar != null && zoomRow != null && zoomCol != null)
           Positioned(
-            top: zoomY,
+            top: zoomY(MediaQuery.of(context).size.width),
             left: zoomX,
             width: biggerKey ? currentKeyWidth! - 10 : 80,
             height: 80,
