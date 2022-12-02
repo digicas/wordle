@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Keyboard extends StatelessWidget {
+class Keyboard extends StatefulWidget {
   const Keyboard({
     super.key,
     this.specialCharsLang,
@@ -13,12 +13,6 @@ class Keyboard extends StatelessWidget {
   static final germanChars = ['ä', 'ö', 'ü', 'ẞ'];
 
   static final czechChars = ['ě', 'š', 'č', 'ř', 'ž', 'ý', 'á', 'í', 'é', 'ů'];
-
-  List<String> get specialChars {
-    if (specialCharsLang == null) return <String>[];
-    if (specialCharsLang == 'cs') return czechChars;
-    return germanChars;
-  }
 
   static final chars = [
     'q',
@@ -55,85 +49,253 @@ class Keyboard extends StatelessWidget {
   final void Function(String) onTap;
   final void Function(String) onSubmitWord;
 
+  @override
+  State<Keyboard> createState() => _KeyboardState();
+}
+
+class _KeyboardState extends State<Keyboard> {
+  List<String> get specialChars {
+    if (widget.specialCharsLang == 'de') return Keyboard.germanChars;
+    if (widget.specialCharsLang == 'cs') return Keyboard.czechChars;
+    return <String>[];
+  }
+
   KeyState getStateByChar(String char) {
-    return keyStates[char] ?? KeyState.clear;
+    return widget.keyStates[char] ?? KeyState.clear;
+  }
+
+  String? zoomedChar;
+  int? zoomRow;
+  int? zoomCol;
+  double? currentKeyWidth;
+  bool biggerKey = false;
+
+  void setCurrentZoomChar({
+    String? char,
+    int? row,
+    int? col,
+    double? currentRowKeyWidth,
+    bool bigKey = false,
+  }) {
+    setState(() {
+      zoomedChar = char;
+      zoomRow = row;
+      zoomCol = col;
+      currentKeyWidth = currentRowKeyWidth;
+      biggerKey = bigKey;
+    });
+  }
+
+  double get zoomY {
+    return ((zoomRow! - 1) * 40) - (biggerKey ? 80 : 60);
+  }
+
+  double get zoomX {
+    final x = zoomCol! * currentKeyWidth!;
+    if (biggerKey) {
+      return x + 5;
+    }
+    return x - currentKeyWidth! / 8;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
+      clipBehavior: Clip.none,
       children: [
-        LayoutBuilder(
-          builder: (context, constraints) => Row(
-            children: [
-              ...(specialChars.isNotEmpty ? specialChars : [specialChars.last])
-                  .map(
-                (ch) => KeyboardTile(
-                  width: constraints.maxWidth / specialChars.length,
-                  char: ch,
-                  state: getStateByChar(ch),
-                  onTap: onTap,
-                  isCompact: specialCharsLang != 'de',
-                ),
-              ),
-            ],
-          ),
+        Column(
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth / specialChars.length;
+                return Row(
+                  children: [
+                    ...(specialChars.isNotEmpty
+                            ? specialChars
+                            : [specialChars.last])
+                        .map(
+                      (ch) => ZoomHitbox(
+                        onEnter: () => setCurrentZoomChar(
+                          char: ch,
+                          row: 1,
+                          col: specialChars.indexOf(ch),
+                          currentRowKeyWidth: width,
+                          bigKey: true,
+                        ),
+                        onLeave: setCurrentZoomChar,
+                        child: KeyboardTile(
+                          onTap: widget.onTap,
+                          char: ch,
+                          state: getStateByChar(ch),
+                          isCompact: widget.specialCharsLang != 'de',
+                          width: width,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth / 10;
+                return Row(
+                  children: List.generate(
+                    10,
+                    (index) => ZoomHitbox(
+                      onEnter: () => setCurrentZoomChar(
+                        char: Keyboard.chars[index],
+                        row: widget.specialCharsLang != null ? 2 : 1,
+                        col: index,
+                        currentRowKeyWidth: width,
+                      ),
+                      onLeave: setCurrentZoomChar,
+                      child: KeyboardTile(
+                        onTap: widget.onTap,
+                        char: Keyboard.chars[index],
+                        state: getStateByChar(Keyboard.chars[index]),
+                        width: width,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth / 9;
+                return Row(
+                  children: List.generate(
+                    9,
+                    (index) => ZoomHitbox(
+                      onEnter: () => setCurrentZoomChar(
+                        char: Keyboard.chars[index + 10],
+                        row: widget.specialCharsLang != null ? 3 : 2,
+                        col: index,
+                        currentRowKeyWidth: width,
+                      ),
+                      onLeave: setCurrentZoomChar,
+                      child: KeyboardTile(
+                        onTap: widget.onTap,
+                        char: Keyboard.chars[index + 10],
+                        state: getStateByChar(Keyboard.chars[index + 10]),
+                        width: width,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth / 9;
+                return Row(
+                  children: [
+                    ZoomHitbox(
+                      onEnter: () => setCurrentZoomChar(
+                        char: '⌫',
+                        row: widget.specialCharsLang != null ? 4 : 3,
+                        col: 0,
+                        currentRowKeyWidth: width,
+                      ),
+                      onLeave: setCurrentZoomChar,
+                      child: KeyboardTile(
+                        onTap: widget.onTap,
+                        char: '⌫',
+                        state: KeyState.clear,
+                        width: constraints.maxWidth / 9,
+                      ),
+                    ),
+                    ...List.generate(
+                      7,
+                      (index) => ZoomHitbox(
+                        onEnter: () => setCurrentZoomChar(
+                          char: Keyboard.chars[index + 19],
+                          row: widget.specialCharsLang != null ? 4 : 3,
+                          col: index + 1,
+                          currentRowKeyWidth: width,
+                        ),
+                        onLeave: setCurrentZoomChar,
+                        child: KeyboardTile(
+                          onTap: widget.onTap,
+                          char: Keyboard.chars[index + 19],
+                          state: getStateByChar(Keyboard.chars[index + 19]),
+                          width: constraints.maxWidth / 9,
+                        ),
+                      ),
+                    ),
+                    if (widget.canSubmit)
+                      ZoomHitbox(
+                        onEnter: () => setCurrentZoomChar(
+                          char: '⏎',
+                          row: widget.specialCharsLang != null ? 4 : 3,
+                          col: 8,
+                          currentRowKeyWidth: width,
+                        ),
+                        onLeave: setCurrentZoomChar,
+                        child: KeyboardTile(
+                          onTap: widget.onSubmitWord,
+                          char: '⏎',
+                          state: KeyState.clear,
+                          width: constraints.maxWidth / 9,
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
         ),
-        LayoutBuilder(
-          builder: (context, constraints) => Row(
-            children: List.generate(
-              10,
-              (index) => KeyboardTile(
-                onTap: onTap,
-                char: chars[index],
-                state: getStateByChar(chars[index]),
-                width: constraints.maxWidth / 10,
+        if (zoomedChar != null && zoomRow != null && zoomCol != null)
+          Positioned(
+            top: zoomY,
+            left: zoomX,
+            width: biggerKey ? currentKeyWidth! - 10 : 80,
+            height: 80,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xffC4C4C4),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                zoomedChar!.toUpperCase(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 40,
+                ),
               ),
             ),
           ),
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) => Row(
-            children: List.generate(
-              9,
-              (index) => KeyboardTile(
-                onTap: onTap,
-                char: chars[index + 10],
-                state: getStateByChar(chars[index + 10]),
-                width: constraints.maxWidth / 9,
-              ),
-            ),
-          ),
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) => Row(
-            children: [
-              KeyboardTile(
-                onTap: onTap,
-                char: '⌫',
-                state: KeyState.clear,
-                width: constraints.maxWidth / 9,
-              ),
-              ...List.generate(
-                7,
-                (index) => KeyboardTile(
-                  onTap: onTap,
-                  char: chars[index + 19],
-                  state: getStateByChar(chars[index + 19]),
-                  width: constraints.maxWidth / 9,
-                ),
-              ),
-              if (canSubmit)
-                KeyboardTile(
-                  onTap: onSubmitWord,
-                  char: '⏎',
-                  state: KeyState.clear,
-                  width: constraints.maxWidth / 9,
-                ),
-            ],
-          ),
-        ),
       ],
+    );
+  }
+}
+
+class ZoomHitbox extends StatelessWidget {
+  const ZoomHitbox({
+    super.key,
+    required this.child,
+    required this.onEnter,
+    required this.onLeave,
+  });
+
+  final Widget child;
+  final void Function() onEnter;
+  final VoidCallback onLeave;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      hitTestBehavior: HitTestBehavior.opaque,
+      onEnter: (event) {
+        if (event.down) {
+          onEnter();
+        }
+      },
+      onExit: (_) => onLeave(),
+      child: child,
     );
   }
 }
