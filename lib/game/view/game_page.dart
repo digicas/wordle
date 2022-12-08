@@ -10,6 +10,7 @@ import 'package:wordle/game/view/widgets/language_button.dart';
 import 'package:wordle/game/view/widgets/post_game_container.dart';
 import 'package:wordle/game/view/widgets/shake_animation.dart';
 import 'package:wordle/game/view/widgets/wordle_tile.dart';
+import 'package:wordle/instruction/view/insctructions_page.dart';
 
 import 'package:wordle/models/answer_word.dart';
 import 'package:wordle/models/wordle_input.dart';
@@ -20,11 +21,13 @@ class GameScreen extends StatefulWidget {
     required this.activeLangs,
     required this.onFinished,
     required this.onLevelStarted,
+    required this.menuImage,
   });
 
   final List<Language> activeLangs;
   final void Function(int) onFinished;
   final void Function() onLevelStarted;
+  final Image menuImage;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -35,19 +38,21 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   final guessWords = <String>[];
   final scrollController = ScrollController();
   final hintGlobalKey = GlobalKey();
+  final scaffoldState = GlobalKey<ScaffoldState>();
 
   late Language selectedLang = widget.activeLangs.first;
 
   AnswerWord? selectedWord;
 
   late List<WordleInput> inputLetters = generateInputs();
-  late List<AnimationController> animationControllers;
-  late List<Animation<double>> shakeAnimations;
   Map<String, KeyState> keyStates = {};
 
-  int guessedWordsCount = 0;
+  late List<AnimationController> animationControllers;
+  late List<Animation<double>> shakeAnimations;
 
-  // bool isHintVisible = false;
+  late final TabController tabController;
+
+  int guessedWordsCount = 0;
 
   bool gameWon = false;
   bool gameLost = false;
@@ -78,6 +83,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       },
     );
     shakeAnimations = animationsList;
+    tabController = TabController(length: 2, vsync: this);
   }
 
   // ignore: unused_element
@@ -260,153 +266,253 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         !gameLost;
   }
 
+  void _showMenu() {
+    final screenSize = MediaQuery.of(scaffoldState.currentContext!).size;
+    showModalBottomSheet<void>(
+      isScrollControlled: true,
+      context: scaffoldState.currentContext!,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      constraints: BoxConstraints(
+        minWidth: screenSize.width,
+        minHeight: screenSize.height,
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 1,
+        minChildSize: 1,
+        builder: (context, scrollController) => LayoutBuilder(
+          builder: (context, constraints) => Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: Navigator.of(context).pop,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(36),
+                      color: Colors.white,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.red,
+                      size: 32,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                width: constraints.maxWidth > 1076
+                    ? constraints.maxWidth * 0.5
+                    : constraints.maxWidth > 576
+                        ? constraints.maxWidth * 0.7
+                        : constraints.maxWidth,
+                height: MediaQuery.of(context).size.height * 0.8,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  children: [
+                    TabBar(
+                      controller: tabController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      tabs: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Color(0xffE4E4E4),
+                              ),
+                            ),
+                          ),
+                          child: const FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              'Instrukce',
+                              style: TextStyle(
+                                fontSize: 28,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Color(0xffE4E4E4),
+                              ),
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: const FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              'Napoveda',
+                              style: TextStyle(
+                                fontSize: 28,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: constraints.maxWidth,
+                      height: screenSize.height * 0.8 - 68,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) => TabBarView(
+                          controller: tabController,
+                          children: [
+                            SizedBox(
+                              height: constraints.maxHeight,
+                              width: constraints.maxWidth,
+                              child: const SingleChildScrollView(
+                                child: InstructionsView(),
+                              ),
+                            ),
+                            SizedBox(
+                              height: constraints.maxHeight,
+                              width: constraints.maxWidth,
+                              child: SingleChildScrollView(
+                                child: Builder(
+                                  builder: (context) {
+                                    final chunks = <List<AnswerWord>>[];
+                                    final chunkSize = answerWords.length ~/ 3;
+                                    for (var i = 0;
+                                        i < answerWords.length;
+                                        i += chunkSize) {
+                                      chunks.add(
+                                        answerWords.sublist(
+                                          i,
+                                          i + chunkSize > answerWords.length
+                                              ? answerWords.length
+                                              : i + chunkSize,
+                                        ),
+                                      );
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 32),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: chunks
+                                            .map(
+                                              (ch) => Column(
+                                                children: ch
+                                                    .map(
+                                                      (a) => Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(
+                                                          2,
+                                                        ),
+                                                        child: Text(
+                                                          a.word,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                    .toList(),
+                                              ),
+                                            )
+                                            .toList(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      isDismissible: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      floatingActionButtonLocation: isHintVisible
-          ? FloatingActionButtonLocation.centerDocked
-          : FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => setState(() => isHintVisible = !isHintVisible),
-        backgroundColor:
-            isHintVisible ? Colors.redAccent : const Color(0xffE4E4E4),
-        elevation: 2,
-        child: isHintVisible
-            ? const Icon(
-                Icons.close,
-                color: Colors.white,
-                size: 32,
+      key: scaffoldState,
+      body: Padding(
+        padding: screenWidth > 1078
+            ? EdgeInsets.symmetric(
+                vertical: 32,
+                horizontal: screenWidth * 0.35,
               )
-            : const Text(
-                '💡',
-                style: TextStyle(
-                  fontSize: 32,
-                ),
-              ),
-      ),
-      bottomSheet: BottomAppBar(
-        elevation: 4,
-        shape: const CircularNotchedRectangle(),
-        color: Colors.white,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          height: isHintVisible
-              ? screenWidth > 768
-                  ? 512
-                  : 256
-              : 10,
-          child: Container(
-            margin: const EdgeInsets.only(top: 32),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Builder(
-                builder: (context) {
-                  final chunks = <List<AnswerWord>>[];
-                  final chunkSize = answerWords.length ~/ 3;
-                  for (var i = 0; i < answerWords.length; i += chunkSize) {
-                    chunks.add(
-                      answerWords.sublist(
-                        i,
-                        i + chunkSize > answerWords.length
-                            ? answerWords.length
-                            : i + chunkSize,
+            : screenWidth > 768
+                ? EdgeInsets.symmetric(
+                    vertical: 24,
+                    horizontal: screenWidth * 0.2,
+                  )
+                : const EdgeInsets.all(8),
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: _showMenu,
+                              child: widget.menuImage,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '$guessedWordsCount',
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: chunks
-                          .map(
-                            (ch) => Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: ch
-                                  .map(
-                                    (a) => Padding(
-                                      padding: const EdgeInsets.all(2),
-                                      child: Text(a.word),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        controller: scrollController,
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: screenWidth > 1078
-              ? EdgeInsets.symmetric(
-                  vertical: 32,
-                  horizontal: screenWidth * 0.35,
-                )
-              : screenWidth > 768
-                  ? EdgeInsets.symmetric(
-                      vertical: 24,
-                      horizontal: screenWidth * 0.2,
-                    )
-                  : const EdgeInsets.all(16),
-          child: isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              size: 32,
-                              color: Colors.orangeAccent,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '$guessedWordsCount',
-                              style: const TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
+                      if (widget.activeLangs.length > 1)
+                        LanguageButton(
+                          activeLangs: widget.activeLangs,
+                          selectedLang: selectedLang,
+                          onChangeLang: changeLanguage,
                         ),
-                        Row(
-                          children: [
-                            if (widget.activeLangs.length > 1)
-                              LanguageButton(
-                                activeLangs: widget.activeLangs,
-                                selectedLang: selectedLang,
-                                onChangeLang: changeLanguage,
-                              ),
-                            const SizedBox(width: 4),
-                            GestureDetector(
-                              onTap: () =>
-                                  Navigator.of(context).popAndPushNamed('/'),
-                              child: const Icon(Icons.menu, size: 32),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    if (kDebugMode) Text('word: ${selectedWord!.word}'),
-                    if (!kDebugMode) const SizedBox(height: 12),
-                    GridView.count(
+                    ],
+                  ),
+                  if (kDebugMode) Text('word: ${selectedWord!.word}'),
+                  if (!kDebugMode) const SizedBox(height: 12),
+                  Expanded(
+                    child: GridView.count(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       crossAxisCount: 6,
                       crossAxisSpacing: 8,
                       mainAxisSpacing: 8,
+                      primary: true,
                       children: List.generate(
                         36,
                         (index) => ShakeAnimation(
@@ -420,25 +526,23 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    if (gameWon || gameLost)
-                      PostGameContainer(
-                        onContinue: resetGame,
-                        gameWon: gameWon,
-                        answerWord: selectedWord!,
-                      )
-                    else
-                      Keyboard(
-                        onTap: inputLetter,
-                        onSubmitWord: submitWord,
-                        canSubmit: isWordComplete,
-                        keyStates: keyStates,
-                        specialCharsLang: selectedLang.code,
-                      ),
-                    const SizedBox(height: 32),
-                  ],
-                ),
-        ),
+                  ),
+                  if (gameWon || gameLost)
+                    PostGameContainer(
+                      onContinue: resetGame,
+                      gameWon: gameWon,
+                      answerWord: selectedWord!,
+                    )
+                  else
+                    Keyboard(
+                      onTap: inputLetter,
+                      onSubmitWord: submitWord,
+                      canSubmit: isWordComplete,
+                      keyStates: keyStates,
+                      specialCharsLang: selectedLang.code,
+                    ),
+                ],
+              ),
       ),
     );
   }
