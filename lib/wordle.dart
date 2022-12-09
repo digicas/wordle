@@ -10,10 +10,12 @@ class WordleGame extends StatelessWidget {
     super.key,
     required this.langs,
     required this.onFinished,
-    required this.onLevelStarted, 
+    required this.onLevelStarted,
     required this.menuImage,
+    required this.langsWithHints,
   });
   final List<String> langs;
+  final List<String> langsWithHints;
   final void Function(int) onFinished;
   final void Function() onLevelStarted;
   final Image menuImage;
@@ -23,13 +25,13 @@ class WordleGame extends StatelessWidget {
     return MaterialApp(
       theme: _buildTheme(Brightness.light),
       debugShowCheckedModeBanner: false,
-      home:GameScreen(
-              activeLangs: langs.map(Language.fromCode).toList(),
-              onLevelStarted: onLevelStarted,
-              onFinished: onFinished,
-              menuImage: menuImage,
-            ),
-      
+      home: GameScreen(
+        activeLangs: langs.map(Language.fromCode).toList(),
+        onLevelStarted: onLevelStarted,
+        onFinished: onFinished,
+        menuImage: menuImage,
+        langsWithHints: langsWithHints.map(Language.fromCode).toList(),
+      ),
     );
   }
 

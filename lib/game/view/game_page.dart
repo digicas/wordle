@@ -22,9 +22,11 @@ class GameScreen extends StatefulWidget {
     required this.onFinished,
     required this.onLevelStarted,
     required this.menuImage,
+    required this.langsWithHints,
   });
 
   final List<Language> activeLangs;
+  final List<Language> langsWithHints;
   final void Function(int) onFinished;
   final void Function() onLevelStarted;
   final Image menuImage;
@@ -83,7 +85,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       },
     );
     shakeAnimations = animationsList;
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
   }
 
   // ignore: unused_element
@@ -211,7 +216,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     setState(() => gameWon = true);
     _incrementCount();
     widget.onFinished(
-      inputLetters.where((i) => i.state != TileState.empty).length ~/ tilesCount,
+      inputLetters.where((i) => i.state != TileState.empty).length ~/
+          tilesCount,
     );
   }
 
@@ -322,136 +328,146 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       ),
                       color: Colors.white,
                     ),
-                    child: Column(
-                      children: [
-                        TabBar(
-                          controller: tabController,
-                          physics: const NeverScrollableScrollPhysics(),
-                          tabs: [
-                            Container(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 16),
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Color(0xffE4E4E4),
-                                  ),
-                                ),
-                              ),
-                              child: const FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  'Instrukce',
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 16),
-                              decoration: const BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Color(0xffE4E4E4),
-                                  ),
-                                ),
-                              ),
-                              alignment: Alignment.center,
-                              child: const FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  'Napoveda',
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          width: constraints.maxWidth,
-                          height: screenSize.height * 0.8 - 68,
-                          child: LayoutBuilder(
-                            builder: (context, constraints) => TabBarView(
-                              controller: tabController,
-                              children: [
-                                SizedBox(
-                                  height: constraints.maxHeight,
-                                  width: constraints.maxWidth,
-                                  child: const SingleChildScrollView(
-                                    child: InstructionsView(),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: constraints.maxHeight,
-                                  width: constraints.maxWidth,
-                                  child: SingleChildScrollView(
-                                    child: Builder(
-                                      builder: (context) {
-                                        final chunks = <List<AnswerWord>>[];
-                                        final chunkSize =
-                                            answerWords.length ~/ 3;
-                                        for (var i = 0;
-                                            i < answerWords.length;
-                                            i += chunkSize) {
-                                          chunks.add(
-                                            answerWords.sublist(
-                                              i,
-                                              i + chunkSize >
-                                                      answerWords.length
-                                                  ? answerWords.length
-                                                  : i + chunkSize,
-                                            ),
-                                          );
-                                        }
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 32),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: chunks
-                                                .map(
-                                                  (ch) => Column(
-                                                    children: ch
-                                                        .map(
-                                                          (a) => Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(
-                                                              2,
-                                                            ),
-                                                            child: Text(
-                                                              a.word,
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 18,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        )
-                                                        .toList(),
-                                                  ),
-                                                )
-                                                .toList(),
-                                          ),
-                                        );
-                                      },
+                    child: widget.langsWithHints.contains(selectedLang)
+                        ? Column(
+                            children: [
+                              TabBar(
+                                controller: tabController,
+                                physics: const NeverScrollableScrollPhysics(),
+                                tabs: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
+                                    alignment: Alignment.center,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Color(0xffE4E4E4),
+                                        ),
+                                      ),
+                                    ),
+                                    child: const FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        'Jak hrát',
+                                        style: TextStyle(
+                                          fontSize: 28,
+                                          color: Colors.black,
+                                        ),
+                                      ),
                                     ),
                                   ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Color(0xffE4E4E4),
+                                        ),
+                                      ),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: const FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        'Napoveda',
+                                        style: TextStyle(
+                                          fontSize: 28,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                width: constraints.maxWidth,
+                                height: screenSize.height * 0.8 - 68,
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) => TabBarView(
+                                    controller: tabController,
+                                    children: [
+                                      SizedBox(
+                                        height: constraints.maxHeight,
+                                        width: constraints.maxWidth,
+                                        child:  SingleChildScrollView(
+                                          child: InstructionsView(
+                                            activeLang: selectedLang,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: constraints.maxHeight,
+                                        width: constraints.maxWidth,
+                                        child: SingleChildScrollView(
+                                          child: Builder(
+                                            builder: (context) {
+                                              final chunks =
+                                                  <List<AnswerWord>>[];
+                                              final chunkSize =
+                                                  answerWords.length ~/ 3;
+                                              for (var i = 0;
+                                                  i < answerWords.length;
+                                                  i += chunkSize) {
+                                                chunks.add(
+                                                  answerWords.sublist(
+                                                    i,
+                                                    i + chunkSize >
+                                                            answerWords.length
+                                                        ? answerWords.length
+                                                        : i + chunkSize,
+                                                  ),
+                                                );
+                                              }
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 32,
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: chunks
+                                                      .map(
+                                                        (ch) => Column(
+                                                          children: ch
+                                                              .map(
+                                                                (a) => Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                    2,
+                                                                  ),
+                                                                  child: Text(
+                                                                    a.word,
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          18,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                              .toList(),
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                              ),
+                            ],
+                          )
+                        :  InstructionsView(activeLang: selectedLang,),
                   ),
                 ),
               ],
@@ -526,7 +542,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       mainAxisSpacing: 8,
                       primary: true,
                       children: List.generate(
-                        6* tilesCount,
+                        6 * tilesCount,
                         (index) => ShakeAnimation(
                           controller: animationControllers[index],
                           animation: shakeAnimations[index],
