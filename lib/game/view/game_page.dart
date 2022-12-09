@@ -65,7 +65,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     _fetchCount();
     final animationsList = <Animation<double>>[];
     animationControllers = List.generate(
-      36,
+      tilesCount * 6,
       (index) {
         final controller = AnimationController(
           vsync: this,
@@ -134,7 +134,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   List<WordleInput> generateInputs() {
     return List.generate(
-      36,
+      tilesCount * 6,
       (_) => WordleInput(),
     );
   }
@@ -162,7 +162,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         .toList();
 
     //* check if word length is correct
-    if (currentWordInputs.length != 6) {
+    if (currentWordInputs.length != tilesCount) {
       return;
     }
 
@@ -211,7 +211,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     setState(() => gameWon = true);
     _incrementCount();
     widget.onFinished(
-      inputLetters.where((i) => i.state != TileState.empty).length ~/ 6,
+      inputLetters.where((i) => i.state != TileState.empty).length ~/ tilesCount,
     );
   }
 
@@ -249,7 +249,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     final filledLettersCount = inputLetters
         .where((i) => i.letter != null && i.state == TileState.empty)
         .length;
-    return filledLettersCount % 6 == 0 && filledLettersCount != 0;
+    return filledLettersCount % tilesCount == 0 && filledLettersCount != 0;
   }
 
   bool isTileFocused(int index) {
@@ -266,6 +266,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         !gameWon &&
         !gameLost;
   }
+
+  int get tilesCount => selectedLang == Language.german ? 6 : 5;
 
   void _showMenu() {
     final screenSize = MediaQuery.of(scaffoldState.currentContext!).size;
@@ -519,12 +521,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                     child: GridView.count(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      crossAxisCount: 6,
+                      crossAxisCount: tilesCount,
                       crossAxisSpacing: 8,
                       mainAxisSpacing: 8,
                       primary: true,
                       children: List.generate(
-                        36,
+                        6* tilesCount,
                         (index) => ShakeAnimation(
                           controller: animationControllers[index],
                           animation: shakeAnimations[index],

@@ -157,14 +157,19 @@ class _KeyboardState extends State<Keyboard> {
       children: [
         GestureDetector(
           key: keyboardKey,
-          onPanStart: (details) => onShowKey(details.localPosition, context),
+          onPanDown: (details) => onShowKey(details.localPosition, context),
           onPanUpdate: (details) =>
               onShownKeyChanged(details.localPosition, context),
           onPanEnd: (details) => setState(() => {
             shownKey = null,
             shownKeyPosition = null,
             shownTileSize = null,
-          }),
+          },),
+          onPanCancel:() => setState(() => {
+            shownKey = null,
+            shownKeyPosition = null,
+            shownTileSize = null,
+          },),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
