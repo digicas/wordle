@@ -73,6 +73,7 @@ class _KeyboardState extends State<Keyboard> {
   Offset? shownKeyPosition;
   double? shownTileSize;
 
+
   void onShowKey(Offset pos, BuildContext context) {
     final keyContext = keyboardKey.currentContext;
     if (keyContext == null) return;
@@ -83,6 +84,10 @@ class _KeyboardState extends State<Keyboard> {
         pos.dx > size.width ||
         pos.dy < 0 ||
         pos.dy > size.height) {
+      shownKey = null;
+      shownKeyPosition = null;
+      shownTileSize = null;
+      setState(() {});
       return;
     }
 
@@ -114,6 +119,7 @@ class _KeyboardState extends State<Keyboard> {
             : currentRow == 1
                 ? getCharsFromIndex(10, 9)
                 : getCharsFromIndex(19, 7);
+    if (currentRowChars.length - 1 < currentColumn) return;
     shownKey = currentRowChars[currentColumn];
     final screenWidth = MediaQuery.of(context).size.width;
     final x = currentColumn * tileSize;
@@ -151,14 +157,14 @@ class _KeyboardState extends State<Keyboard> {
       children: [
         GestureDetector(
           key: keyboardKey,
-          onLongPressDown: (details) =>
-              onShowKey(details.localPosition, context),
-          onLongPressMoveUpdate: (details) =>
+          onPanStart: (details) => onShowKey(details.localPosition, context),
+          onPanUpdate: (details) =>
               onShownKeyChanged(details.localPosition, context),
-          onLongPressCancel:() => setState(() {
-            shownKey = null;
-            shownKeyPosition = null;
-          }) ,
+          onPanEnd: (details) => setState(() => {
+            shownKey = null,
+            shownKeyPosition = null,
+            shownTileSize = null,
+          }),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -257,7 +263,9 @@ class _KeyboardState extends State<Keyboard> {
                 left: shownKeyPosition!.dx,
                 child: Transform.translate(
                   offset: Offset(
-                    specialChars.contains(shownKey) ? 0 : -(shownTileSize! / 4),
+                    Keyboard.germanChars.contains(shownKey)
+                        ? 0
+                        : -(shownTileSize! / 4),
                     shownKeyPosition!.dy -
                         (size * 1.5) -
                         (KeyboardTile.padding(
@@ -266,7 +274,7 @@ class _KeyboardState extends State<Keyboard> {
                             2),
                   ),
                   child: Container(
-                    width: specialChars.contains(shownKey)
+                    width: Keyboard.germanChars.contains(shownKey)
                         ? shownTileSize
                         : shownTileSize! * 1.5,
                     height: size * 1.5,
