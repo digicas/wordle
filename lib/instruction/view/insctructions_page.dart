@@ -117,11 +117,7 @@ class InstructionsView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Image.asset(
-            'packages/wordle/assets/instructions_wrong.png',
-            width: 312,
-            height: 70,
-          ),
+          Image.asset('packages/wordle/assets/instructions_wrong.png'),
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -138,11 +134,7 @@ class InstructionsView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Image.asset(
-            'packages/wordle/assets/instructions_wrong_index.png',
-            width: 312,
-            height: 70,
-          ),
+          Image.asset('packages/wordle/assets/instructions_wrong_index.png'),
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -155,22 +147,14 @@ class InstructionsView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Image.asset(
-            'packages/wordle/assets/instructions_correct.png',
-            width: 312,
-            height: 70,
-          ),
+          Image.asset('packages/wordle/assets/instructions_correct.png'),
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text('Máte 6 pokusů.', style: baseStyle),
           ),
           const SizedBox(height: 8),
-          Image.asset(
-            'packages/wordle/assets/instructions_win.png',
-            width: 312,
-            height: 70,
-          ),
+          Image.asset('packages/wordle/assets/instructions_win.png'),
           const SizedBox(height: 24),
           FittedBox(
             fit: BoxFit.scaleDown,
