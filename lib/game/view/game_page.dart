@@ -467,7 +467,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                               ),
                             ],
                           )
-                        :  InstructionsView(activeLang: selectedLang,),
+                        :  SingleChildScrollView(child: InstructionsView(activeLang: selectedLang,)),
                   ),
                 ),
               ],
