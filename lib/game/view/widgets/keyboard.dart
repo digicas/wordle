@@ -73,7 +73,6 @@ class _KeyboardState extends State<Keyboard> {
   Offset? shownKeyPosition;
   double? shownTileSize;
 
-
   void onShowKey(Offset pos, BuildContext context) {
     final keyContext = keyboardKey.currentContext;
     if (keyContext == null) return;
@@ -160,16 +159,20 @@ class _KeyboardState extends State<Keyboard> {
           onPanDown: (details) => onShowKey(details.localPosition, context),
           onPanUpdate: (details) =>
               onShownKeyChanged(details.localPosition, context),
-          onPanEnd: (details) => setState(() => {
-            shownKey = null,
-            shownKeyPosition = null,
-            shownTileSize = null,
-          },),
-          onPanCancel:() => setState(() => {
-            shownKey = null,
-            shownKeyPosition = null,
-            shownTileSize = null,
-          },),
+          onPanEnd: (details) => setState(
+            () => {
+              shownKey = null,
+              shownKeyPosition = null,
+              shownTileSize = null,
+            },
+          ),
+          onPanCancel: () => setState(
+            () => {
+              shownKey = null,
+              shownKeyPosition = null,
+              shownTileSize = null,
+            },
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
