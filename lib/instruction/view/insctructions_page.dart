@@ -29,7 +29,7 @@ class InstructionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12,16,12,0),
+      padding: const EdgeInsets.fromLTRB(12, 16, 12, 16),
       child: Column(
         children: [
           const FittedBox(
@@ -117,7 +117,11 @@ class InstructionsView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Image.asset('packages/wordle/assets/instructions_wrong.png'),
+          Image.asset(
+            'packages/wordle/assets/instructions_wrong.png',
+            width: 312,
+            height: 70,
+          ),
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -134,7 +138,11 @@ class InstructionsView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Image.asset('packages/wordle/assets/instructions_wrong_index.png'),
+          Image.asset(
+            'packages/wordle/assets/instructions_wrong_index.png',
+            width: 312,
+            height: 70,
+          ),
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -147,14 +155,22 @@ class InstructionsView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Image.asset('packages/wordle/assets/instructions_correct.png'),
+          Image.asset(
+            'packages/wordle/assets/instructions_correct.png',
+            width: 312,
+            height: 70,
+          ),
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text('Máte 6 pokusů.', style: baseStyle),
           ),
           const SizedBox(height: 8),
-          Image.asset('packages/wordle/assets/instructions_win.png'),
+          Image.asset(
+            'packages/wordle/assets/instructions_win.png',
+            width: 312,
+            height: 70,
+          ),
           const SizedBox(height: 24),
           FittedBox(
             fit: BoxFit.scaleDown,
