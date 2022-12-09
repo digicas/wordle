@@ -393,7 +393,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: constraints.maxHeight,
                                         width: constraints.maxWidth,
-                                        child:  SingleChildScrollView(
+                                        child: SingleChildScrollView(
                                           child: InstructionsView(
                                             activeLang: selectedLang,
                                           ),
@@ -467,7 +467,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                               ),
                             ],
                           )
-                        :  SingleChildScrollView(child: InstructionsView(activeLang: selectedLang,)),
+                        : SingleChildScrollView(
+                            child: InstructionsView(
+                            activeLang: selectedLang,
+                          )),
                   ),
                 ),
               ],
@@ -486,17 +489,22 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return Scaffold(
       key: scaffoldState,
       body: Padding(
-        padding: screenWidth > 1078
+        padding: screenWidth > 1920
             ? EdgeInsets.symmetric(
                 vertical: 32,
-                horizontal: screenWidth * 0.3,
+                horizontal: screenWidth * 0.4,
               )
-            : screenWidth > 768
+            : screenWidth > 1078
                 ? EdgeInsets.symmetric(
-                    vertical: 24,
-                    horizontal: screenWidth * 0.2,
+                    vertical: 32,
+                    horizontal: screenWidth * 0.3,
                   )
-                : const EdgeInsets.all(8),
+                : screenWidth > 768
+                    ? EdgeInsets.symmetric(
+                        vertical: 24,
+                        horizontal: screenWidth * 0.2,
+                      )
+                    : const EdgeInsets.all(8),
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : Column(
