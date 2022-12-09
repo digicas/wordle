@@ -373,7 +373,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                     child: const FittedBox(
                                       fit: BoxFit.scaleDown,
                                       child: Text(
-                                        'Napoveda',
+                                        'Nápověda',
                                         style: TextStyle(
                                           fontSize: 28,
                                           color: Colors.black,
