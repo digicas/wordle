@@ -60,96 +60,233 @@ class _KeyboardState extends State<Keyboard> {
     return <String>[];
   }
 
+  final keyboardKey = GlobalKey<RawGestureDetectorState>();
+
   KeyState getStateByChar(String char) {
     return widget.keyStates[char] ?? KeyState.clear;
   }
 
+  bool get hasSpecialChars =>
+      widget.specialCharsLang == 'cs' || widget.specialCharsLang == 'de';
+
+  String? shownKey;
+  Offset? shownKeyPosition;
+  double? shownTileSize;
+
+  void onShowKey(Offset pos, BuildContext context) {
+    final keyContext = keyboardKey.currentContext;
+    if (keyContext == null) return;
+    if (keyContext.findRenderObject() == null) return;
+    final size = (keyContext.findRenderObject()! as RenderBox).size;
+
+    if (pos.dx < 0 ||
+        pos.dx > size.width ||
+        pos.dy < 0 ||
+        pos.dy > size.height) {
+      return;
+    }
+
+    final rowHeight = size.height / (hasSpecialChars ? 4 : 3);
+    final currentRow = (pos.dy / rowHeight).floor();
+    var tileSize = 0.0;
+    if (hasSpecialChars) {
+      tileSize = size.width /
+          (currentRow == 0
+              ? specialChars.length
+              : currentRow == 1
+                  ? 10
+                  : 9);
+    } else {
+      tileSize = size.width / (currentRow == 0 ? 10 : 0);
+    }
+    shownTileSize = tileSize;
+    final currentColumn = (pos.dx / tileSize).floor();
+    final currentRowChars = hasSpecialChars
+        ? currentRow == 0
+            ? specialChars
+            : currentRow == 1
+                ? getCharsFromIndex(0, 10)
+                : currentRow == 2
+                    ? getCharsFromIndex(10, 9)
+                    : getCharsFromIndex(19, 7)
+        : currentRow == 0
+            ? getCharsFromIndex(0, 10)
+            : currentRow == 1
+                ? getCharsFromIndex(10, 9)
+                : getCharsFromIndex(19, 7);
+    shownKey = currentRowChars[currentColumn];
+    final screenWidth = MediaQuery.of(context).size.width;
+    final x = currentColumn * tileSize;
+
+    final y = (screenWidth > 1078 ? 4 : 2) +
+        (currentRow * KeyboardTile._getSize(screenWidth)) +
+        (currentRow * (screenWidth > 1078 ? 8 : 4));
+    shownKeyPosition = Offset(x, y);
+    setState(() {});
+  }
+
+  void onShownKeyChanged(Offset pos, BuildContext context) {
+    onShowKey(pos, context);
+  }
+
+  List<String> getCharsFromIndex(int index, int length) {
+    final result = <String>[];
+    if (index > 18) {
+      result
+        ..add('⌫')
+        ..addAll(List.generate(length, (index) => Keyboard.chars[index + 19]))
+        ..add('⏎');
+    } else {
+      for (var i = index; i - index < length; i++) {
+        result.add(Keyboard.chars[i]);
+      }
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Stack(
+      clipBehavior: Clip.none,
       children: [
-        if (specialChars.isNotEmpty)
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final width = constraints.maxWidth / specialChars.length;
-              return Row(
-                children: [
-                  ...specialChars.map(
-                    (ch) => KeyboardTile(
-                      onTap: widget.onTap,
-                      char: ch,
-                      state: getStateByChar(ch),
-                      isCompact: widget.specialCharsLang != 'de',
-                      width: width,
+        GestureDetector(
+          key: keyboardKey,
+          onLongPressDown: (details) =>
+              onShowKey(details.localPosition, context),
+          onLongPressMoveUpdate: (details) =>
+              onShownKeyChanged(details.localPosition, context),
+          onLongPressCancel:() => setState(() {
+            shownKey = null;
+            shownKeyPosition = null;
+          }) ,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (specialChars.isNotEmpty)
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final width = constraints.maxWidth / specialChars.length;
+                    return Row(
+                      children: [
+                        ...specialChars.map(
+                          (ch) => KeyboardTile(
+                            onTap: widget.onTap,
+                            char: ch,
+                            state: getStateByChar(ch),
+                            width: width,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final width = constraints.maxWidth / 10;
+                  return Row(
+                    children: List.generate(
+                      10,
+                      (index) => KeyboardTile(
+                        onTap: widget.onTap,
+                        char: Keyboard.chars[index],
+                        state: getStateByChar(Keyboard.chars[index]),
+                        width: width,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final width = constraints.maxWidth / 9;
+                  return Row(
+                    children: List.generate(
+                      9,
+                      (index) => KeyboardTile(
+                        onTap: widget.onTap,
+                        char: Keyboard.chars[index + 10],
+                        state: getStateByChar(Keyboard.chars[index + 10]),
+                        width: width,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Row(
+                    children: [
+                      KeyboardTile(
+                        onTap: widget.onTap,
+                        char: '⌫',
+                        state: KeyState.clear,
+                        width: constraints.maxWidth / 9,
+                      ),
+                      ...List.generate(
+                        7,
+                        (index) => KeyboardTile(
+                          onTap: widget.onTap,
+                          char: Keyboard.chars[index + 19],
+                          state: getStateByChar(Keyboard.chars[index + 19]),
+                          width: constraints.maxWidth / 9,
+                        ),
+                      ),
+                      if (widget.canSubmit)
+                        KeyboardTile(
+                          onTap: widget.onSubmitWord,
+                          char: '⏎',
+                          state: KeyState.clear,
+                          width: constraints.maxWidth / 9,
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        if (shownKey != null &&
+            shownKeyPosition != null &&
+            shownTileSize != null)
+          Builder(
+            builder: (context) {
+              final size =
+                  KeyboardTile._getSize(MediaQuery.of(context).size.width);
+              return Positioned(
+                top: 0,
+                left: shownKeyPosition!.dx,
+                child: Transform.translate(
+                  offset: Offset(
+                    specialChars.contains(shownKey) ? 0 : -(shownTileSize! / 4),
+                    shownKeyPosition!.dy -
+                        (size * 1.5) -
+                        (KeyboardTile.padding(
+                              MediaQuery.of(context).size.width,
+                            ) *
+                            2),
+                  ),
+                  child: Container(
+                    width: specialChars.contains(shownKey)
+                        ? shownTileSize
+                        : shownTileSize! * 1.5,
+                    height: size * 1.5,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xffC4C4C4)),
+                      color: const Color(0xffE4E4E4),
+                    ),
+                    child: Text(
+                      shownKey!.toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 48,
+                      ),
                     ),
                   ),
-                ],
+                ),
               );
             },
           ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final width = constraints.maxWidth / 10;
-            return Row(
-              children: List.generate(
-                10,
-                (index) => KeyboardTile(
-                  onTap: widget.onTap,
-                  char: Keyboard.chars[index],
-                  state: getStateByChar(Keyboard.chars[index]),
-                  width: width,
-                ),
-              ),
-            );
-          },
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final width = constraints.maxWidth / 9;
-            return Row(
-              children: List.generate(
-                9,
-                (index) => KeyboardTile(
-                  onTap: widget.onTap,
-                  char: Keyboard.chars[index + 10],
-                  state: getStateByChar(Keyboard.chars[index + 10]),
-                  width: width,
-                ),
-              ),
-            );
-          },
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return Row(
-              children: [
-                KeyboardTile(
-                  onTap: widget.onTap,
-                  char: '⌫',
-                  state: KeyState.clear,
-                  width: constraints.maxWidth / 9,
-                ),
-                ...List.generate(
-                  7,
-                  (index) => KeyboardTile(
-                    onTap: widget.onTap,
-                    char: Keyboard.chars[index + 19],
-                    state: getStateByChar(Keyboard.chars[index + 19]),
-                    width: constraints.maxWidth / 9,
-                  ),
-                ),
-                if (widget.canSubmit)
-                  KeyboardTile(
-                    onTap: widget.onSubmitWord,
-                    char: '⏎',
-                    state: KeyState.clear,
-                    width: constraints.maxWidth / 9,
-                  ),
-              ],
-            );
-          },
-        ),
       ],
     );
   }
@@ -162,29 +299,31 @@ class KeyboardTile extends StatelessWidget {
     required this.char,
     required this.state,
     required this.width,
-    this.isCompact = true,
   });
 
   final void Function(String) onTap;
   final String char;
   final double width;
-  final bool isCompact;
   final KeyState state;
 
-  double _getSize(double s) {
+  static double _getSize(double s) {
     if (s > 768 && s < 1078) {
-      return isCompact ? 40 : 56;
+      return 56;
     }
 
     if (s > 1078) {
-      return isCompact ? 32 : 48;
+      return 48;
     }
 
     if (s > 400 && s < 768) {
-      return isCompact ? 36 : 50;
+      return 50;
     }
 
-    return isCompact ? 28 : 44;
+    return 44;
+  }
+
+  static double padding(double s) {
+    return s > 1078 ? 4 : 2;
   }
 
   @override
@@ -197,9 +336,9 @@ class KeyboardTile extends StatelessWidget {
         width: width,
         child: Container(
           margin: EdgeInsets.all(
-            screenWidth > 1078 ? 6 : 4,
+            padding(screenWidth),
           ),
-          width: _getSize(screenWidth),
+          width: width - screenWidth > 1078 ? 8 : 4,
           height: _getSize(screenWidth),
           alignment: Alignment.center,
           decoration: BoxDecoration(

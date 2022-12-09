@@ -274,180 +274,190 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       context: scaffoldState.currentContext!,
       enableDrag: false,
       backgroundColor: Colors.transparent,
-      constraints: BoxConstraints(
-        minWidth: screenSize.width,
-        minHeight: screenSize.height,
-      ),
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 1,
-        minChildSize: 1,
-        builder: (context, scrollController) => LayoutBuilder(
-          builder: (context, constraints) => Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: Navigator.of(context).pop,
+      // barrierColor: Colors.red,
+      builder: (context) => LayoutBuilder(
+        builder: (context, constraints) => GestureDetector(
+          onTap: Navigator.of(context).pop,
+          child: Container(
+            width: constraints.maxWidth,
+            color: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: Navigator.of(context).pop,
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(36),
+                        color: Colors.white,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 32,
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {},
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(36),
+                    width: constraints.maxWidth > 1076
+                        ? constraints.maxWidth * 0.5
+                        : constraints.maxWidth > 576
+                            ? constraints.maxWidth * 0.7
+                            : constraints.maxWidth,
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                      ),
                       color: Colors.white,
                     ),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.red,
-                      size: 32,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                width: constraints.maxWidth > 1076
-                    ? constraints.maxWidth * 0.5
-                    : constraints.maxWidth > 576
-                        ? constraints.maxWidth * 0.7
-                        : constraints.maxWidth,
-                height: MediaQuery.of(context).size.height * 0.8,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                  ),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  children: [
-                    TabBar(
-                      controller: tabController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      tabs: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Color(0xffE4E4E4),
-                              ),
-                            ),
-                          ),
-                          child: const FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              'Instrukce',
-                              style: TextStyle(
-                                fontSize: 28,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Color(0xffE4E4E4),
-                              ),
-                            ),
-                          ),
-                          alignment: Alignment.center,
-                          child: const FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              'Napoveda',
-                              style: TextStyle(
-                                fontSize: 28,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: constraints.maxWidth,
-                      height: screenSize.height * 0.8 - 68,
-                      child: LayoutBuilder(
-                        builder: (context, constraints) => TabBarView(
+                    child: Column(
+                      children: [
+                        TabBar(
                           controller: tabController,
-                          children: [
-                            SizedBox(
-                              height: constraints.maxHeight,
-                              width: constraints.maxWidth,
-                              child: const SingleChildScrollView(
-                                child: InstructionsView(),
+                          physics: const NeverScrollableScrollPhysics(),
+                          tabs: [
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16),
+                              alignment: Alignment.center,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Color(0xffE4E4E4),
+                                  ),
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: constraints.maxHeight,
-                              width: constraints.maxWidth,
-                              child: SingleChildScrollView(
-                                child: Builder(
-                                  builder: (context) {
-                                    final chunks = <List<AnswerWord>>[];
-                                    final chunkSize = answerWords.length ~/ 3;
-                                    for (var i = 0;
-                                        i < answerWords.length;
-                                        i += chunkSize) {
-                                      chunks.add(
-                                        answerWords.sublist(
-                                          i,
-                                          i + chunkSize > answerWords.length
-                                              ? answerWords.length
-                                              : i + chunkSize,
-                                        ),
-                                      );
-                                    }
-                                    return Padding(
-                                      padding: const EdgeInsets.only(top: 32),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: chunks
-                                            .map(
-                                              (ch) => Column(
-                                                children: ch
-                                                    .map(
-                                                      (a) => Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(
-                                                          2,
-                                                        ),
-                                                        child: Text(
-                                                          a.word,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                    .toList(),
-                                              ),
-                                            )
-                                            .toList(),
-                                      ),
-                                    );
-                                  },
+                              child: const FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  'Instrukce',
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16),
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Color(0xffE4E4E4),
+                                  ),
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: const FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  'Napoveda',
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            )
                           ],
                         ),
-                      ),
+                        SizedBox(
+                          width: constraints.maxWidth,
+                          height: screenSize.height * 0.8 - 68,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => TabBarView(
+                              controller: tabController,
+                              children: [
+                                SizedBox(
+                                  height: constraints.maxHeight,
+                                  width: constraints.maxWidth,
+                                  child: const SingleChildScrollView(
+                                    child: InstructionsView(),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: constraints.maxHeight,
+                                  width: constraints.maxWidth,
+                                  child: SingleChildScrollView(
+                                    child: Builder(
+                                      builder: (context) {
+                                        final chunks = <List<AnswerWord>>[];
+                                        final chunkSize =
+                                            answerWords.length ~/ 3;
+                                        for (var i = 0;
+                                            i < answerWords.length;
+                                            i += chunkSize) {
+                                          chunks.add(
+                                            answerWords.sublist(
+                                              i,
+                                              i + chunkSize >
+                                                      answerWords.length
+                                                  ? answerWords.length
+                                                  : i + chunkSize,
+                                            ),
+                                          );
+                                        }
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 32),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: chunks
+                                                .map(
+                                                  (ch) => Column(
+                                                    children: ch
+                                                        .map(
+                                                          (a) => Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(
+                                                              2,
+                                                            ),
+                                                            child: Text(
+                                                              a.word,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
+        //   ),
+        // ),
       ),
     );
   }
@@ -461,7 +471,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         padding: screenWidth > 1078
             ? EdgeInsets.symmetric(
                 vertical: 32,
-                horizontal: screenWidth * 0.35,
+                horizontal: screenWidth * 0.3,
               )
             : screenWidth > 768
                 ? EdgeInsets.symmetric(
