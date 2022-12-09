@@ -146,10 +146,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           inputLetters.firstWhere((i) => i.letter == null).letter = letter;
         }
       } else {
-        inputLetters
-            .where((i) => i.letter != null && i.state == TileState.empty)
-            .last
-            .letter = null;
+        final usedTiles = inputLetters
+            .where((i) => i.letter != null && i.state == TileState.empty);
+        if (usedTiles.isNotEmpty) {
+          usedTiles.last.letter = null;
+        }
       }
     });
   }
@@ -448,7 +449,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           ),
         ),
       ),
-      isDismissible: false,
     );
   }
 
