@@ -396,6 +396,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         child: SingleChildScrollView(
                                           child: InstructionsView(
                                             activeLang: selectedLang,
+                                            showGerman: widget.activeLangs
+                                                    .contains(
+                                                        Language.german) ||
+                                                widget.activeLangs
+                                                    .contains(Language.english),
                                           ),
                                         ),
                                       ),
@@ -469,8 +474,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           )
                         : SingleChildScrollView(
                             child: InstructionsView(
-                            activeLang: selectedLang,
-                          )),
+                              activeLang: selectedLang,
+                              showGerman: widget.activeLangs
+                                      .contains(Language.german) ||
+                                  widget.activeLangs.contains(Language.english),
+                            ),
+                          ),
                   ),
                 ),
               ],
