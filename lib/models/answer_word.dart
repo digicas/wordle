@@ -3,7 +3,7 @@
 class AnswerWord {
   const AnswerWord({
     required this.word,
-    required this.czechTr,
+     this.czechTr,
   });
 
   factory AnswerWord.fromJson(dynamic json) {
@@ -13,7 +13,7 @@ class AnswerWord {
     );
   }
   final String word;
-  final String czechTr;
+  final String? czechTr;
 
   bool containsLetter(String letter) => word.split('').contains(letter);
   bool letterCorrectIndex(String letter, int index) =>
