@@ -494,22 +494,54 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return Scaffold(
       key: scaffoldState,
       body: Padding(
-        padding: screenWidth > 1920
+        padding:
+         screenWidth > 4000
+            ? EdgeInsets.symmetric(
+                vertical: 32,
+                horizontal: screenWidth * 0.8,
+              ) :
+         screenWidth > 3200
+            ? EdgeInsets.symmetric(
+                vertical: 32,
+                horizontal: screenWidth * 0.6,
+              ) :
+         screenWidth > 2560
+            ? EdgeInsets.symmetric(
+                vertical: 32,
+                horizontal: screenWidth * 0.5,
+              ) :
+         screenWidth > 1920
             ? EdgeInsets.symmetric(
                 vertical: 32,
                 horizontal: screenWidth * 0.4,
+              ) :
+        screenWidth > 1560
+            ? EdgeInsets.symmetric(
+                vertical: 32,
+                horizontal: screenWidth * 0.35,
               )
             : screenWidth > 1078
                 ? EdgeInsets.symmetric(
                     vertical: 32,
                     horizontal: screenWidth * 0.3,
                   )
-                : screenWidth > 768
+                :
+
+
+                screenWidth > 976 ?EdgeInsets.symmetric(
+                        vertical: 24,
+                        horizontal: screenWidth * 0.25,
+                      ) :
+                screenWidth > 768 ?EdgeInsets.symmetric(
+                        vertical: 24,
+                        horizontal: screenWidth * 0.20,
+                      ) :
+                 screenWidth > 576
                     ? EdgeInsets.symmetric(
                         vertical: 24,
-                        horizontal: screenWidth * 0.2,
+                        horizontal: screenWidth * 0.25,
                       )
-                    : const EdgeInsets.all(8),
+                    : const EdgeInsets.all(16),
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : Column(
@@ -549,23 +581,25 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   Expanded(
                     child: GridView.count(
                       physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      crossAxisCount: tilesCount,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
                       primary: true,
-                      children: List.generate(
-                        6 * tilesCount,
-                        (index) => ShakeAnimation(
-                          controller: animationControllers[index],
-                          animation: shakeAnimations[index],
-                          child: WordleTile(
-                            letter: inputLetters[index].letter,
-                            isFocused: isTileFocused(index),
-                            state: inputLetters[index].state,
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(bottom: 16),
+                          crossAxisCount: tilesCount,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          children: List.generate(
+                            6 * tilesCount,
+                            (index) => ShakeAnimation(
+                              controller: animationControllers[index],
+                              animation: shakeAnimations[index],
+                              child: WordleTile(
+                                letter: inputLetters[index].letter,
+                                isFocused: isTileFocused(index),
+                                state: inputLetters[index].state,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                       
                     ),
                   ),
                   if (gameWon || gameLost)
