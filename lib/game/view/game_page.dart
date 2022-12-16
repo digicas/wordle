@@ -579,7 +579,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   if (kDebugMode) Text('word: ${selectedWord!.word}'),
                   if (!kDebugMode) const SizedBox(height: 12),
                   Expanded(
-                    child: GridView.count(
+                    child:  SizedBox(
+                      
+                      height:MediaQuery.of(context).size.height * 0.5,
+                      child: GridView.count(
                       physics: const NeverScrollableScrollPhysics(),
                       primary: true,
                       shrinkWrap: true,
@@ -600,6 +603,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             ),
                           ),
                        
+                    ),
                     ),
                   ),
                   if (gameWon || gameLost)

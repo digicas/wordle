@@ -9,7 +9,7 @@ class AnswerWord {
   factory AnswerWord.fromJson(dynamic json) {
     return AnswerWord(
       word: (json['word'] as String).toLowerCase(),
-      czechTr: json['czechTranslate'] as String,
+      czechTr: json['czechTranslate'] as String?,
     );
   }
   final String word;
