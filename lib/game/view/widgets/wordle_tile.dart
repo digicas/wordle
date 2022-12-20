@@ -5,12 +5,13 @@ class WordleTile extends StatefulWidget {
     super.key,
     this.letter,
     required this.state,
-    required this.isFocused,
+    required this.isFocused, required this.size,
   });
 
   final String? letter;
   final TileState state;
   final bool isFocused;
+  final Size size;
 
   @override
   State<WordleTile> createState() => _WordleTileState();
@@ -60,16 +61,14 @@ class _WordleTileState extends State<WordleTile>
     return AnimatedBuilder(
       animation: controller,
       builder: (context, child) => Container(
+        width: widget.size.width,
+        height: widget.size.height,
         padding: const EdgeInsets.all(4),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color:
               widget.isFocused ? Colors.transparent : widget.state.background,
           borderRadius: BorderRadius.circular(4),
-          // border: Border.all(
-          //   color: isFocused ? Colors.blueAccent : Colors.transparent,
-          //   width: 3,
-          // ),
           boxShadow: widget.isFocused
               ? [
                   BoxShadow(

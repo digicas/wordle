@@ -275,6 +275,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   int get tilesCount => selectedLang == Language.german ? 6 : 5;
 
+  double sizePadding(double size) {
+    if(size > 3500) return size / 2;
+    if(size > 1800) return size / 3;
+    if(size > 976) return size / 4;
+    if(size > 576) return 32;
+    if(size > 476) return 16;
+    return 4;
+  }
+
+
   void _showMenu() {
     final screenSize = MediaQuery.of(scaffoldState.currentContext!).size;
     showModalBottomSheet<void>(
@@ -489,136 +499,108 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldState,
       body: Padding(
-        padding: screenWidth > 4000
-            ? EdgeInsets.symmetric(
-                vertical: 32,
-                horizontal: screenWidth * 0.8,
-              )
-            : screenWidth > 3200
-                ? EdgeInsets.symmetric(
-                    vertical: 32,
-                    horizontal: screenWidth * 0.6,
-                  )
-                : screenWidth > 2560
-                    ? EdgeInsets.symmetric(
-                        vertical: 32,
-                        horizontal: screenWidth * 0.5,
-                      )
-                    : screenWidth > 1920
-                        ? EdgeInsets.symmetric(
-                            vertical: 32,
-                            horizontal: screenWidth * 0.4,
-                          )
-                        : screenWidth > 1560
-                            ? EdgeInsets.symmetric(
-                                vertical: 32,
-                                horizontal: screenWidth * 0.35,
-                              )
-                            : screenWidth > 1078
-                                ? EdgeInsets.symmetric(
-                                    vertical: 32,
-                                    horizontal: screenWidth * 0.3,
-                                  )
-                                : screenWidth > 976
-                                    ? EdgeInsets.symmetric(
-                                        vertical: 24,
-                                        horizontal: screenWidth * 0.25,
-                                      )
-                                    : screenWidth > 768
-                                        ? EdgeInsets.symmetric(
-                                            vertical: 24,
-                                            horizontal: screenWidth * 0.20,
-                                          )
-                                        : screenWidth > 576
-                                            ? EdgeInsets.symmetric(
-                                                vertical: 24,
-                                                horizontal: screenWidth * 0.25,
-                                              )
-                                            : const EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(horizontal: sizePadding(size.width)),
         child: isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
             : Column(
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.08,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                onTap: _showMenu,
-                                child: widget.menuImage,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: GestureDetector(
+                                  onTap: _showMenu,
+                                  child: widget.menuImage,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '$guessedWordsCount',
-                              style: const TextStyle(
-                                fontSize: 20,
+                              const SizedBox(width: 4),
+                              Text(
+                                '$guessedWordsCount',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
+                            ],
+                          ),
+                          if (widget.activeLangs.length > 1)
+                            LanguageButton(
+                              activeLangs: widget.activeLangs,
+                              selectedLang: selectedLang,
+                              onChangeLang: changeLanguage,
                             ),
-                          ],
-                        ),
-                        if (widget.activeLangs.length > 1)
-                          LanguageButton(
-                            activeLangs: widget.activeLangs,
-                            selectedLang: selectedLang,
-                            onChangeLang: changeLanguage,
-                          ),
-                      ],
-                    ),
-                  ),
-                  // if (kDebugMode) Text('word: ${selectedWord!.word}'),
-                  // if (!kDebugMode) const SizedBox(height: 12),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.57,
-                    child: GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      primary: true,
-                      shrinkWrap: true,
-                      crossAxisCount: tilesCount,
-                      crossAxisSpacing: 4,
-                      mainAxisSpacing: 4,
-                      children: List.generate(
-                        6 * tilesCount,
-                        (index) => ShakeAnimation(
-                          controller: animationControllers[index],
-                          animation: shakeAnimations[index],
-                          child: WordleTile(
-                            letter: inputLetters[index].letter,
-                            isFocused: isTileFocused(index),
-                            state: inputLetters[index].state,
-                          ),
-                        ),
+                        ],
                       ),
                     ),
                   ),
-                 
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    alignment: Alignment.bottomCenter,
-                    child: gameWon || gameLost
-                        ? PostGameContainer(
-                            onContinue: resetGame,
-                            gameWon: gameWon,
-                            answerWord: selectedWord!,
-                          )
-                        : Keyboard(
-                            onTap: inputLetter,
-                            onSubmitWord: submitWord,
-                            canSubmit: isWordComplete,
-                            keyStates: keyStates,
-                            specialCharsLang: selectedLang.code,
+                  if (kDebugMode)
+                    Text(
+                      'word: ${selectedWord!.word}',
+                      style: const TextStyle(fontSize: 8),
+                    ),
+                  Expanded(
+                    flex: 12,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final height = (constraints.maxHeight - 6 * 8) / 6;
+                        final width = (constraints.maxWidth - tilesCount * 8) /
+                            tilesCount;
+                        return Column(
+                          children: List.generate(
+                            6,
+                            (index) => Row(
+                              children: List.generate(tilesCount, (i) {
+                                final currentIndex = i + (index * tilesCount);
+                                return ShakeAnimation(
+                                  controller: animationControllers[i],
+                                  animation: shakeAnimations[i],
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4),
+                                    child: WordleTile(
+                                      letter: inputLetters[currentIndex].letter,
+                                      isFocused: isTileFocused(currentIndex),
+                                      state: inputLetters[currentIndex].state,
+                                      size: Size(width, height),
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ),
                           ),
+                        );
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    flex: 8,
+                    child: Container(
+                      alignment: Alignment.bottomCenter,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: gameWon || gameLost
+                          ? PostGameContainer(
+                              onContinue: resetGame,
+                              gameWon: gameWon,
+                              answerWord: selectedWord!,
+                            )
+                          : Keyboard(
+                              onTap: inputLetter,
+                              onSubmitWord: submitWord,
+                              canSubmit: isWordComplete,
+                              keyStates: keyStates,
+                              specialCharsLang: selectedLang.code,
+                            ),
+                    ),
                   ),
                 ],
               ),
