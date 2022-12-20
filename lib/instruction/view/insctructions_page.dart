@@ -242,7 +242,7 @@ class InstructionsView extends StatelessWidget {
               ],
             ),
           const SizedBox(height: 8),
-          Image.asset('packages/wordle/assets/instructions_wrong.png'),
+          Image.asset('packages/wordle/assets/wrong_$activeLang.png'),
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -282,7 +282,7 @@ class InstructionsView extends StatelessWidget {
               ],
             ),
           const SizedBox(height: 8),
-          Image.asset('packages/wordle/assets/instructions_wrong_index.png'),
+          Image.asset('packages/wordle/assets/wrong_index_$activeLang.png'),
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -311,7 +311,7 @@ class InstructionsView extends StatelessWidget {
               ],
             ),
           const SizedBox(height: 8),
-          Image.asset('packages/wordle/assets/instructions_correct.png'),
+          Image.asset('packages/wordle/assets/correct_$activeLang.png'),
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -328,7 +328,7 @@ class InstructionsView extends StatelessWidget {
               ],
             ),
           const SizedBox(height: 8),
-          Image.asset('packages/wordle/assets/instructions_win.png'),
+          Image.asset('packages/wordle/assets/win_$activeLang.png'),
           const SizedBox(height: 24),
           FittedBox(
             fit: BoxFit.scaleDown,

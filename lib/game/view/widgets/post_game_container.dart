@@ -15,6 +15,9 @@ class PostGameContainer extends StatelessWidget {
 
   bool get gameLost => !gameWon;
 
+  String get translation =>
+      answerWord.czechTr != null ? '(${answerWord.czechTr})' : '';
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,7 +38,7 @@ class PostGameContainer extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '${answerWord.word} (${answerWord.czechTr})',
+            '${answerWord.word} $translation',
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 24,

@@ -396,7 +396,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         child: SingleChildScrollView(
                                           child: InstructionsView(
                                             activeLang: selectedLang,
-                                            showGerman: selectedLang == Language.german,
+                                            showGerman:
+                                                selectedLang == Language.german,
                                           ),
                                         ),
                                       ),
@@ -471,9 +472,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         : SingleChildScrollView(
                             child: InstructionsView(
                               activeLang: selectedLang,
-                              showGerman: widget.activeLangs
-                                      .contains(Language.german) ||
-                                  widget.activeLangs.contains(Language.english),
+                              showGerman: selectedLang == Language.german,
                             ),
                           ),
                   ),
@@ -494,132 +493,133 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return Scaffold(
       key: scaffoldState,
       body: Padding(
-        padding:
-         screenWidth > 4000
+        padding: screenWidth > 4000
             ? EdgeInsets.symmetric(
                 vertical: 32,
                 horizontal: screenWidth * 0.8,
-              ) :
-         screenWidth > 3200
-            ? EdgeInsets.symmetric(
-                vertical: 32,
-                horizontal: screenWidth * 0.6,
-              ) :
-         screenWidth > 2560
-            ? EdgeInsets.symmetric(
-                vertical: 32,
-                horizontal: screenWidth * 0.5,
-              ) :
-         screenWidth > 1920
-            ? EdgeInsets.symmetric(
-                vertical: 32,
-                horizontal: screenWidth * 0.4,
-              ) :
-        screenWidth > 1560
-            ? EdgeInsets.symmetric(
-                vertical: 32,
-                horizontal: screenWidth * 0.35,
               )
-            : screenWidth > 1078
+            : screenWidth > 3200
                 ? EdgeInsets.symmetric(
                     vertical: 32,
-                    horizontal: screenWidth * 0.3,
+                    horizontal: screenWidth * 0.6,
                   )
-                :
-
-
-                screenWidth > 976 ?EdgeInsets.symmetric(
-                        vertical: 24,
-                        horizontal: screenWidth * 0.25,
-                      ) :
-                screenWidth > 768 ?EdgeInsets.symmetric(
-                        vertical: 24,
-                        horizontal: screenWidth * 0.20,
-                      ) :
-                 screenWidth > 576
+                : screenWidth > 2560
                     ? EdgeInsets.symmetric(
-                        vertical: 24,
-                        horizontal: screenWidth * 0.25,
+                        vertical: 32,
+                        horizontal: screenWidth * 0.5,
                       )
-                    : const EdgeInsets.all(16),
+                    : screenWidth > 1920
+                        ? EdgeInsets.symmetric(
+                            vertical: 32,
+                            horizontal: screenWidth * 0.4,
+                          )
+                        : screenWidth > 1560
+                            ? EdgeInsets.symmetric(
+                                vertical: 32,
+                                horizontal: screenWidth * 0.35,
+                              )
+                            : screenWidth > 1078
+                                ? EdgeInsets.symmetric(
+                                    vertical: 32,
+                                    horizontal: screenWidth * 0.3,
+                                  )
+                                : screenWidth > 976
+                                    ? EdgeInsets.symmetric(
+                                        vertical: 24,
+                                        horizontal: screenWidth * 0.25,
+                                      )
+                                    : screenWidth > 768
+                                        ? EdgeInsets.symmetric(
+                                            vertical: 24,
+                                            horizontal: screenWidth * 0.20,
+                                          )
+                                        : screenWidth > 576
+                                            ? EdgeInsets.symmetric(
+                                                vertical: 24,
+                                                horizontal: screenWidth * 0.25,
+                                              )
+                                            : const EdgeInsets.all(16),
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: _showMenu,
-                              child: widget.menuImage,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: _showMenu,
+                                child: widget.menuImage,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '$guessedWordsCount',
-                            style: const TextStyle(
-                              fontSize: 20,
+                            const SizedBox(width: 4),
+                            Text(
+                              '$guessedWordsCount',
+                              style: const TextStyle(
+                                fontSize: 20,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      if (widget.activeLangs.length > 1)
-                        LanguageButton(
-                          activeLangs: widget.activeLangs,
-                          selectedLang: selectedLang,
-                          onChangeLang: changeLanguage,
+                          ],
                         ),
-                    ],
+                        if (widget.activeLangs.length > 1)
+                          LanguageButton(
+                            activeLangs: widget.activeLangs,
+                            selectedLang: selectedLang,
+                            onChangeLang: changeLanguage,
+                          ),
+                      ],
+                    ),
                   ),
-                  if (kDebugMode) Text('word: ${selectedWord!.word}'),
-                  if (!kDebugMode) const SizedBox(height: 12),
-                  Expanded(
-                    child:  SizedBox(
-                      
-                      height:MediaQuery.of(context).size.height * 0.5,
-                      child: GridView.count(
+                  // if (kDebugMode) Text('word: ${selectedWord!.word}'),
+                  // if (!kDebugMode) const SizedBox(height: 12),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.57,
+                    child: GridView.count(
                       physics: const NeverScrollableScrollPhysics(),
                       primary: true,
                       shrinkWrap: true,
-                      padding: const EdgeInsets.only(bottom: 16),
-                          crossAxisCount: tilesCount,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                          children: List.generate(
-                            6 * tilesCount,
-                            (index) => ShakeAnimation(
-                              controller: animationControllers[index],
-                              animation: shakeAnimations[index],
-                              child: WordleTile(
-                                letter: inputLetters[index].letter,
-                                isFocused: isTileFocused(index),
-                                state: inputLetters[index].state,
-                              ),
-                            ),
+                      crossAxisCount: tilesCount,
+                      crossAxisSpacing: 4,
+                      mainAxisSpacing: 4,
+                      children: List.generate(
+                        6 * tilesCount,
+                        (index) => ShakeAnimation(
+                          controller: animationControllers[index],
+                          animation: shakeAnimations[index],
+                          child: WordleTile(
+                            letter: inputLetters[index].letter,
+                            isFocused: isTileFocused(index),
+                            state: inputLetters[index].state,
                           ),
-                       
-                    ),
+                        ),
+                      ),
                     ),
                   ),
-                  if (gameWon || gameLost)
-                    PostGameContainer(
-                      onContinue: resetGame,
-                      gameWon: gameWon,
-                      answerWord: selectedWord!,
-                    )
-                  else
-                    Keyboard(
-                      onTap: inputLetter,
-                      onSubmitWord: submitWord,
-                      canSubmit: isWordComplete,
-                      keyStates: keyStates,
-                      specialCharsLang: selectedLang.code,
-                    ),
+                 
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    alignment: Alignment.bottomCenter,
+                    child: gameWon || gameLost
+                        ? PostGameContainer(
+                            onContinue: resetGame,
+                            gameWon: gameWon,
+                            answerWord: selectedWord!,
+                          )
+                        : Keyboard(
+                            onTap: inputLetter,
+                            onSubmitWord: submitWord,
+                            canSubmit: isWordComplete,
+                            keyStates: keyStates,
+                            specialCharsLang: selectedLang.code,
+                          ),
+                  ),
                 ],
               ),
       ),
