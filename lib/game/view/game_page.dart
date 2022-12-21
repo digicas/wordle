@@ -510,38 +510,36 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               )
             : Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: _showMenu,
-                                  child: widget.menuImage,
-                                ),
+                  const SizedBox(height:16),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: _showMenu,
+                                child: widget.menuImage,
                               ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '$guessedWordsCount',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
-                          ),
-                          if (widget.activeLangs.length > 1)
-                            LanguageButton(
-                              activeLangs: widget.activeLangs,
-                              selectedLang: selectedLang,
-                              onChangeLang: changeLanguage,
                             ),
-                        ],
-                      ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '$guessedWordsCount',
+                              style: const TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (widget.activeLangs.length > 1)
+                          LanguageButton(
+                            activeLangs: widget.activeLangs,
+                            selectedLang: selectedLang,
+                            onChangeLang: changeLanguage,
+                          ),
+                      ],
                     ),
                   ),
                   if (kDebugMode)
@@ -549,6 +547,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       'word: ${selectedWord!.word}',
                       style: const TextStyle(fontSize: 8),
                     ),
+                  const SizedBox(height:16),
                   Expanded(
                     flex: 12,
                     child: LayoutBuilder(
