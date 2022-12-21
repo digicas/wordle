@@ -556,26 +556,30 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         final height = (constraints.maxHeight - 6 * 8) / 6;
                         final width = (constraints.maxWidth - tilesCount * 8) /
                             tilesCount;
-                        return Column(
-                          children: List.generate(
-                            6,
-                            (index) => Row(
-                              children: List.generate(tilesCount, (i) {
-                                final currentIndex = i + (index * tilesCount);
-                                return ShakeAnimation(
-                                  controller: animationControllers[i],
-                                  animation: shakeAnimations[i],
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4),
-                                    child: WordleTile(
-                                      letter: inputLetters[currentIndex].letter,
-                                      isFocused: isTileFocused(currentIndex),
-                                      state: inputLetters[currentIndex].state,
-                                      size: Size(width, height),
+                        return SizedBox(
+                          width: constraints.maxWidth,
+                          height: constraints.maxHeight,
+                          child: Column(
+                            children: List.generate(
+                              6,
+                              (index) => Row(
+                                children: List.generate(tilesCount, (i) {
+                                  final currentIndex = i + (index * tilesCount);
+                                  return ShakeAnimation(
+                                    controller: animationControllers[i],
+                                    animation: shakeAnimations[i],
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4),
+                                      child: WordleTile(
+                                        letter: inputLetters[currentIndex].letter,
+                                        isFocused: isTileFocused(currentIndex),
+                                        state: inputLetters[currentIndex].state,
+                                        size: Size(width, height),
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
+                                  );
+                                }),
+                              ),
                             ),
                           ),
                         );
