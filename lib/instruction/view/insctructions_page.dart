@@ -67,7 +67,7 @@ class InstructionsView extends StatelessWidget {
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              'Hádáte slovo $wordLength znáků dlouhé. Např.',
+              'Hádáte podstatné jméno $wordLength znaků dlouhé, které hra zná. Např.',
               style: baseStyle,
             ),
           ),
@@ -77,7 +77,7 @@ class InstructionsView extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('$exampleWords ', style: boldStyle),
+                Text('$exampleWords, ', style: boldStyle),
                 Text(
                   'apod.',
                   style: baseStyle,
@@ -116,7 +116,7 @@ class InstructionsView extends StatelessWidget {
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              'Postupně zkoušíte zadat své tipy.',
+              'Postupně zadávejte své tipy.',
               style: baseStyle,
             ),
           ),
@@ -134,52 +134,54 @@ class InstructionsView extends StatelessWidget {
               ],
             ),
           const SizedBox(height: 8),
+          
+//           FittedBox(
+//             fit: BoxFit.scaleDown,
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 Text('Musí to být vždy ', style: baseStyle),
+//                 Text('podstatáné jméno ', style: boldStyle),
+//                 Text('(které hra zná)', style: baseStyle),
+//               ],
+//             ),
+//           ),
+//           const SizedBox(height: 8),
+//           FittedBox(
+//             fit: BoxFit.scaleDown,
+//             child: Text('dlouhé $wordLength písmen', style: baseStyle),
+//           ),
+//           if (showGerman)
+//             Column(
+//               children: [
+//                 const SizedBox(height: 8),
+//                 FittedBox(
+//                   fit: BoxFit.scaleDown,
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     children: [
+//                       Text('(Es muss immer ein ', style: baseGerman),
+//                       Text('Substantiv sein, ', style: boldGerman),
+//                       Text('das das Spiel markiert)', style: baseGerman),
+//                     ],
+//                   ),
+//                 ),
+//                 const SizedBox(height: 8),
+//                 FittedBox(
+//                   fit: BoxFit.scaleDown,
+//                   child:
+//                       Text('lange $wordLength Buchstaben', style: baseGerman),
+//                 ),
+//               ],
+//             ),
+//           const SizedBox(height: 8),
+                    
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Musí to být vždy ', style: baseStyle),
-                Text('podstatáné jméno ', style: boldStyle),
-                Text('(které hra zná)', style: baseStyle),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text('dlouhé $wordLength písmen', style: baseStyle),
-          ),
-          if (showGerman)
-            Column(
-              children: [
-                const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('(Es muss immer ein ', style: baseGerman),
-                      Text('Substantiv sein, ', style: boldGerman),
-                      Text('das das Spiel markiert)', style: baseGerman),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child:
-                      Text('lange $wordLength Buchstaben', style: baseGerman),
-                ),
-              ],
-            ),
-          const SizedBox(height: 8),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Potvrdíte jej klávesou ', style: baseStyle),
+                Text('Tipy potvrzujte klávesou ', style: baseStyle),
                 Text('Enter (⏎) ', style: boldStyle),
               ],
             ),
@@ -187,7 +189,7 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 4),
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text('a hra zadané slovo označí:', style: baseStyle),
+            child: Text('Hra každý tip vyhodnotí a označí:', style: baseStyle),
           ),
           if (showGerman)
             Column(
@@ -246,15 +248,15 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 18),
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text('Písmena obsažena v hledaném slove,', style: baseStyle),
+            child: Text('Písmena v hledaném slově ', style: baseStyle),
           ),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('ale ležící ', style: baseStyle),
-                Text('na nesprávné pozici:', style: boldStyle),
+                Text('jsou, ', style: baseStyle),
+                Text('ale na jiné pozici:', style: boldStyle),
               ],
             ),
           ),
@@ -289,7 +291,7 @@ class InstructionsView extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Písmeno ležící ', style: baseStyle),
+                Text('Písmena ležící ', style: baseStyle),
                 Text('na správné pozici:', style: boldStyle),
               ],
             ),
@@ -333,7 +335,7 @@ class InstructionsView extends StatelessWidget {
           FittedBox(
             fit: BoxFit.scaleDown,
             child:
-                Text('Autorem původní hry v angličtine je', style: baseStyle),
+                Text('Zpracoval Kvalitní digičas, z.s. ', style: baseStyle),
           ),
           if (showGerman)
             Column(
@@ -342,7 +344,7 @@ class InstructionsView extends StatelessWidget {
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    '(Der Autor des englischen Originalspiels ist)',
+                    'Produziert von Kvalitní digičas, z.s. ',
                     style: baseGerman,
                   ),
                 ),
@@ -350,7 +352,7 @@ class InstructionsView extends StatelessWidget {
               ],
             ),
           const SizedBox(height: 4),
-          Text('Josh Wardle', style: baseStyle),
+          Text('www.edukids.cz', style: baseStyle),
         ],
       ),
     );
