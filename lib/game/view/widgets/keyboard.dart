@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Keyboard extends StatefulWidget {
   const Keyboard({
@@ -347,7 +348,10 @@ class KeyboardTile extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => onTap(char),
+      onTap: () {
+        HapticFeedback.lightImpact();
+        onTap(char);
+      },
       child: SizedBox(
         width: width,
         child: Container(
@@ -364,7 +368,11 @@ class KeyboardTile extends StatelessWidget {
                     ? Colors.orange
                     : state == KeyState.wrong
                         ? const Color(0xffC4C4C4)
-                        : const Color(0xffE4E4E4),
+                        : char == '⏎'
+                            ? Colors.lightBlue
+                            : char == '⌫'
+                                ? Colors.red
+                                : const Color(0xffE4E4E4),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
