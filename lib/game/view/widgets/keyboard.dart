@@ -371,13 +371,14 @@ class KeyboardTile extends StatelessWidget {
                         : char == '⏎'
                             ? Colors.lightBlue
                             : char == '⌫'
-                                ? Colors.red
+                                ? Colors.redAccent[400]
                                 : const Color(0xffE4E4E4),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
             char != 'ẞ' ? char.toUpperCase() : 'ẞ',
             style: TextStyle(
+              color: char == '⏎' || char == '⌫' ? Colors.white : Colors.black,
               fontSize: screenWidth > 1078
                   ? 24
                   : screenWidth > 768
