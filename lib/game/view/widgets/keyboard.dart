@@ -289,6 +289,14 @@ class _KeyboardState extends State<Keyboard> {
                     height: size * 1.5,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black54,
+                          blurRadius: 4,
+                          spreadRadius: 1,
+                          offset: Offset(2, 2),
+                        ),
+                      ],
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: const Color(0xffC4C4C4)),
                       color: const Color(0xffE4E4E4),

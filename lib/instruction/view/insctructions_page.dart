@@ -40,21 +40,19 @@ class InstructionsView extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(12, 16, 12, 16),
       child: Column(
         children: [
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Text.rich(
+            TextSpan(
               children: [
-                const Text(
-                  'Pravidla',
+                const TextSpan(
+                  text: 'Pravidla',
                   style: TextStyle(
                     fontSize: 44,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 if (showGerman)
-                  const Text(
-                    '(Regeln)',
+                  const TextSpan(
+                    text: ' (Regeln)',
                     style: TextStyle(
                       fontSize: 44,
                       fontWeight: FontWeight.w500,
@@ -63,78 +61,63 @@ class InstructionsView extends StatelessWidget {
               ],
             ),
           ),
+
           const SizedBox(height: 24),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              'Hádáte podstatné jméno $wordLength znaků dlouhé, které hra zná. Např.',
-              style: baseStyle,
-            ),
+
+          Text(
+            'Hádáte podstatné jméno $wordLength znaků dlouhé, které hra zná. Např.',
+            maxLines: 4,
+            style: baseStyle,
           ),
           const SizedBox(height: 8),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Text.rich(
+            TextSpan(
               children: [
-                Text('$exampleWords, ', style: boldStyle),
-                Text(
-                  'apod.',
+                TextSpan(text: '$exampleWords, ', style: boldStyle),
+                TextSpan(
+                  text: 'apod.',
                   style: baseStyle,
-                )
+                ),
               ],
             ),
           ),
+
           if (showGerman)
             Column(
               children: [
                 const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    '(Sie erraten ein Wort mit $wordLength Buchstaben. Zum Beispiel.',
-                    style: baseGerman,
-                  ),
+                Text(
+                  '(Sie erraten ein Wort mit $wordLength Buchstaben. Zum Beispiel.',
+                  style: baseGerman,
                 ),
                 const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Text.rich(
+                  TextSpan(
                     children: [
-                      Text('$exampleWords ', style: boldStyle),
-                      Text(
-                        'usw.)',
-                        style: baseGerman,
-                      )
+                      TextSpan(text: '$exampleWords ', style: boldStyle),
+                      TextSpan(text: 'usw.)', style: baseGerman),
                     ],
                   ),
                 ),
               ],
             ),
           const SizedBox(height: 12),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              'Postupně zadávejte své tipy.',
-              style: baseStyle,
-            ),
+          Text(
+            'Postupně zadávejte své tipy.',
+            style: baseStyle,
           ),
           if (showGerman)
             Column(
               children: [
                 const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    '(Sie versuchen, Ihre Tipps nacheinander einzugeben.)',
-                    style: baseGerman,
-                  ),
+                Text(
+                  '(Sie versuchen, Ihre Tipps nacheinander einzugeben.)',
+                  style: baseGerman,
                 ),
               ],
             ),
           const SizedBox(height: 8),
-          
+
 //           FittedBox(
 //             fit: BoxFit.scaleDown,
 //             child: Row(
@@ -175,69 +158,101 @@ class InstructionsView extends StatelessWidget {
 //               ],
 //             ),
 //           const SizedBox(height: 8),
-                    
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Text.rich(
+            TextSpan(
               children: [
-                Text('Tipy potvrzujte klávesou ', style: baseStyle),
-                Text('Enter (⏎) ', style: boldStyle),
+                TextSpan(text: 'Mazat můžete klávesou ', style: baseStyle),
+                TextSpan(
+                  text: 'Backspace (⌫) ',
+                  style: boldStyle,
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 4),
+          if (showGerman)
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: '(Sie können mit der ', style: baseGerman),
+                  TextSpan(
+                    text: 'Rückschritttaste (⌫)',
+                    style: boldGerman,
+                  ),
+                  TextSpan(
+                    text: ' löschen',
+                    style: baseGerman,
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 4),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: 'Tipy potvrzujte klávesou ', style: baseStyle),
+                TextSpan(
+                  text: 'Enter (⏎) ',
+                  style: boldStyle,
+                ),
               ],
             ),
           ),
           const SizedBox(height: 4),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text('Hra každý tip vyhodnotí a označí:', style: baseStyle),
-          ),
+          Text('Hra každý tip vyhodnotí a označí:', style: baseStyle),
           if (showGerman)
             Column(
               children: [
                 const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Text.rich(
+                  TextSpan(
                     children: [
-                      Text('(Bestätigen Sie mit der Taste ', style: baseGerman),
-                      Text('Enter (⏎) ', style: boldGerman),
+                      TextSpan(
+                          text: '(Bestätigen Sie mit der Taste ',
+                          style: baseGerman),
+                      TextSpan(
+                        text: 'Enter (⏎) ',
+                        style: boldGerman,
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 4),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    'und das Spiel markiert dieses Wort)',
-                    style: baseGerman,
-                  ),
+                Text(
+                  'und das Spiel markiert dieses Wort)',
+                  style: baseGerman,
                 ),
               ],
             ),
           const SizedBox(height: 12),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Text.rich(
+            TextSpan(
               children: [
-                Text('Pokud písmena v hledaném slově ', style: baseStyle),
-                Text('nejsou:', style: boldStyle),
+                TextSpan(
+                    text: 'Pokud písmena v hledaném slově ', style: baseStyle),
+                TextSpan(
+                  text: 'nejsou:',
+                  style: boldStyle,
+                ),
               ],
             ),
           ),
+
           if (showGerman)
             Column(
               children: [
                 const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Text.rich(
+                  TextSpan(
                     children: [
-                      Text('(Wenn die Buchstaben des Suchworts ',
+                      TextSpan(
+                          text: '(Wenn die Buchstaben des Suchworts ',
                           style: baseGerman),
-                      Text('night:)', style: boldGerman),
+                      TextSpan(
+                        text: 'night:)',
+                        style: boldGerman,
+                      ),
                     ],
                   ),
                 ),
@@ -246,17 +261,15 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/wrong_$activeLang.png'),
           const SizedBox(height: 18),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text('Písmena v hledaném slově ', style: baseStyle),
-          ),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Text('Písmena v hledaném slově ', style: baseStyle),
+          Text.rich(
+            TextSpan(
               children: [
-                Text('jsou, ', style: baseStyle),
-                Text('ale na jiné pozici:', style: boldStyle),
+                TextSpan(text: 'jsou, ', style: baseStyle),
+                TextSpan(
+                  text: 'ale na jiné pozici:',
+                  style: boldStyle,
+                ),
               ],
             ),
           ),
@@ -271,13 +284,14 @@ class InstructionsView extends StatelessWidget {
                     style: baseStyle,
                   ),
                 ),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Text.rich(
+                  TextSpan(
                     children: [
-                      Text('aber Raupen ', style: baseGerman),
-                      Text('in der falschen Position:)', style: boldGerman),
+                      TextSpan(text: 'aber Raupen ', style: baseGerman),
+                      TextSpan(
+                        text: 'in der falschen Position:)',
+                        style: boldGerman,
+                      ),
                     ],
                   ),
                 ),
@@ -286,13 +300,14 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/wrong_index_$activeLang.png'),
           const SizedBox(height: 18),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Text.rich(
+            TextSpan(
               children: [
-                Text('Písmena ležící ', style: baseStyle),
-                Text('na správné pozici:', style: boldStyle),
+                TextSpan(text: 'Písmena ležící ', style: baseStyle),
+                TextSpan(
+                  text: 'na správné pozici:',
+                  style: boldStyle,
+                ),
               ],
             ),
           ),
@@ -300,13 +315,15 @@ class InstructionsView extends StatelessWidget {
             Column(
               children: [
                 const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Text.rich(
+                  TextSpan(
                     children: [
-                      Text('(Der Buchstabe klettert ', style: baseGerman),
-                      Text('an der richtigen Stelle:)', style: boldGerman),
+                      TextSpan(
+                          text: '(Der Buchstabe klettert ', style: baseGerman),
+                      TextSpan(
+                        text: 'an der richtigen Stelle:)',
+                        style: boldGerman,
+                      ),
                     ],
                   ),
                 ),
@@ -315,44 +332,47 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/correct_$activeLang.png'),
           const SizedBox(height: 18),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text('Máte 6 pokusů.', style: baseStyle),
-          ),
+          Text('Uhádnuté slovo:', style: baseStyle),
           if (showGerman)
             Column(
               children: [
                 const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text('(Du hast sechs Versuche.)', style: baseGerman),
-                ),
+                Text('(Ein erratenes Wort:)', style: baseGerman),
               ],
             ),
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/win_$activeLang.png'),
-          const SizedBox(height: 24),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child:
-                Text('Zpracoval Kvalitní digičas, z.s. ', style: baseStyle),
-          ),
+          const SizedBox(height: 12),
+          Text('Máte 6 pokusů.', style: baseStyle),
           if (showGerman)
             Column(
               children: [
-                const SizedBox(height: 4),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    'Produziert von Kvalitní digičas, z.s. ',
-                    style: baseGerman,
-                  ),
-                ),
-                
+                const SizedBox(height: 8),
+                Text('(Du hast sechs Versuche.)', style: baseGerman),
               ],
             ),
-          const SizedBox(height: 4),
-          Text('www.edukids.cz', style: baseStyle),
+          // const SizedBox(height: 24),
+          // FittedBox(
+          //   fit: BoxFit.scaleDown,
+          //   child:
+          //       Text('Zpracoval Kvalitní digičas, z.s. ', style: baseStyle),
+          // ),
+          // if (showGerman)
+          //   Column(
+          //     children: [
+          //       const SizedBox(height: 4),
+          //       FittedBox(
+          //         fit: BoxFit.scaleDown,
+          //         child: Text(
+          //           'Produziert von Kvalitní digičas, z.s. ',
+          //           style: baseGerman,
+          //         ),
+          //       ),
+
+          //     ],
+          //   ),
+          // const SizedBox(height: 4),
+          // Text('www.edukids.cz', style: baseStyle),
         ],
       ),
     );

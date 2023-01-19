@@ -276,14 +276,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   int get tilesCount => selectedLang == Language.german ? 6 : 5;
 
   double sizePadding(double size) {
-    if(size > 3500) return size / 2;
-    if(size > 1800) return size / 3;
-    if(size > 976) return size / 4;
-    if(size > 576) return 32;
-    if(size > 476) return 16;
+    if (size > 3500) return size / 2;
+    if (size > 1800) return size / 3;
+    if (size > 976) return size / 4;
+    if (size > 576) return 32;
+    if (size > 476) return 16;
     return 4;
   }
-
 
   void _showMenu() {
     final screenSize = MediaQuery.of(scaffoldState.currentContext!).size;
@@ -510,21 +509,34 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               )
             : Column(
                 children: [
-                  const SizedBox(height:16),
+                  const SizedBox(height: 16),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: _showMenu,
+                            child: Row(
+                              children: [
+                                widget.menuImage,
+                                const SizedBox(width: 4),
+                                const Text(
+                                  // '$guessedWordsCount',
+                                  'Nápověda',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if(guessedWordsCount > 0)
                         Row(
                           children: [
-                            MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                onTap: _showMenu,
-                                child: widget.menuImage,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
+                            const Icon(Icons.check, color: Colors.green),
                             Text(
                               '$guessedWordsCount',
                               style: const TextStyle(
@@ -547,7 +559,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       'word: ${selectedWord!.word}',
                       style: const TextStyle(fontSize: 8),
                     ),
-                  const SizedBox(height:16),
+                  const SizedBox(height: 16),
                   Expanded(
                     flex: 12,
                     child: LayoutBuilder(
@@ -570,7 +582,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                     child: Padding(
                                       padding: const EdgeInsets.all(4),
                                       child: WordleTile(
-                                        letter: inputLetters[currentIndex].letter,
+                                        letter:
+                                            inputLetters[currentIndex].letter,
                                         isFocused: isTileFocused(currentIndex),
                                         state: inputLetters[currentIndex].state,
                                         size: Size(width, height),
