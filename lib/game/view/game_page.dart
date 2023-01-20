@@ -131,7 +131,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     widget.onLevelStarted();
     setState(() {
       setState(() {
-        selectedWord = (answerWords..shuffle()).first;
+        // selectedWord = (answerWords..shuffle()).first;
+        selectedWord = AnswerWord(word:'kozar', czechTr: 'kozar');
         answerWords.shuffle();
       });
     });
@@ -189,9 +190,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       //* check if guessed word contains input letter
       if (selectedWord!.letters.contains(input.letter)) {
         final index = currentWordInputs.indexOf(input);
-        input.state = TileState.wrongIndex;
-        keyStates[input.letter!] = KeyState.contains;
+
+        if (keyStates[input.letter!] != KeyState.correct) {
+          keyStates[input.letter!] = KeyState.contains;
+        }
+          input.state = TileState.wrongIndex;
         //* check if index of letter is correct
+
         if (selectedWord!.letters[index] == input.letter) {
           input.state = TileState.correct;
           keyStates[input.letter!] = KeyState.correct;
@@ -533,18 +538,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                        if(guessedWordsCount > 0)
-                        Row(
-                          children: [
-                            const Icon(Icons.check, color: Colors.green),
-                            Text(
-                              '$guessedWordsCount',
-                              style: const TextStyle(
-                                fontSize: 20,
+                        if (guessedWordsCount > 0)
+                          Row(
+                            children: [
+                              const Icon(Icons.check, color: Colors.green),
+                              Text(
+                                '$guessedWordsCount',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
                         if (widget.activeLangs.length > 1)
                           LanguageButton(
                             activeLangs: widget.activeLangs,
