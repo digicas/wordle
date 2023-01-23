@@ -19,7 +19,15 @@ class AnswerWord {
   bool letterCorrectIndex(String letter, int index) =>
       containsLetter(letter) && word.split('').elementAt(index) == letter;
 
-  List<String> get letters => word.split('');
+  List<String> get letters => word.toLowerCase().split('');
+
+  int charCount(String char) {
+    var count = 0;
+    for(final letter in letters) {
+      if(letter.toLowerCase() == char.toLowerCase()) count++;
+    }
+    return count;
+  }
 
   @override
   String toString() {

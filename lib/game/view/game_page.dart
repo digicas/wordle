@@ -131,7 +131,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     widget.onLevelStarted();
     setState(() {
       setState(() {
-        selectedWord = (answerWords..shuffle()).first;
+        // selectedWord = (answerWords..shuffle()).first;
+        selectedWord = AnswerWord(word: 'KOKSO');
         answerWords.shuffle();
       });
     });
@@ -187,16 +188,39 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
     for (final input in currentWordInputs) {
       //* check if guessed word contains input letter
-      if (selectedWord!.letters.contains(input.letter)) {
+
+      if (selectedWord!.letters.contains(input.letter!.toLowerCase())) {
         final index = currentWordInputs.indexOf(input);
 
         if (keyStates[input.letter!] != KeyState.correct) {
           keyStates[input.letter!] = KeyState.contains;
         }
+        if (selectedWord!.charCount(input.letter!) >
+            currentWordInputs
+                .where(
+                  (i) =>
+                      i.letter == input.letter &&
+                      (i.state == TileState.wrongIndex ||
+                          i.state == TileState.correct),
+                )
+                .length) {
           input.state = TileState.wrongIndex;
+        }
         //* check if index of letter is correct
 
         if (selectedWord!.letters[index] == input.letter) {
+          if (currentWordInputs
+                  .where((i) =>
+                      i.letter == input.letter &&
+                      (i.state == TileState.wrongIndex ||
+                          i.state == TileState.correct))
+                  .length >=
+              selectedWord!.charCount(input.letter!)) {
+            currentWordInputs.reversed.firstWhere(
+              (i) =>
+                  i.letter == input.letter && i.state == TileState.wrongIndex,
+            ).state = TileState.wrong;
+          }
           input.state = TileState.correct;
           keyStates[input.letter!] = KeyState.correct;
         }
