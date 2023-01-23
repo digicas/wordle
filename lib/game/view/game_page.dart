@@ -131,8 +131,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     widget.onLevelStarted();
     setState(() {
       setState(() {
-        // selectedWord = (answerWords..shuffle()).first;
-        selectedWord = AnswerWord(word: 'KOKSO');
+        selectedWord = (answerWords..shuffle()).first;
         answerWords.shuffle();
       });
     });
