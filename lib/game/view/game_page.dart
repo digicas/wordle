@@ -166,6 +166,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         .where((i) => i.letter != null && i.state == TileState.empty)
         .toList();
 
+
+    print(currentWordInputs.map((i) => '${i.letter}: ${i.state}'));
+
     //* check if word length is correct
     if (currentWordInputs.length != tilesCount) {
       return;
@@ -215,13 +218,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           i.state == TileState.correct))
                   .length >=
               selectedWord!.charCount(input.letter!)) {
-            currentWordInputs.reversed.firstWhere(
-              (i) =>
-                  i.letter == input.letter && i.state == TileState.wrongIndex,
-            ).state = TileState.wrong;
+            currentWordInputs.reversed
+                .firstWhere(
+                  (i) =>
+                      i.letter == input.letter &&
+                      i.state == TileState.wrongIndex,
+                )
+                .state = TileState.wrong;
           }
           input.state = TileState.correct;
           keyStates[input.letter!] = KeyState.correct;
+        } else if(input.state == TileState.empty) {
+          input.state = TileState.wrong;
         }
       } else {
         //* guess word does not contain input letter
@@ -231,10 +239,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     }
     //* check is all input letters are correct
     for (final input in currentWordInputs) {
+
+      if(input.state == TileState.empty) {
+        input.state = TileState.wrong;
+      }
       if (input.state != TileState.correct) {
         if (hasLost) {
           gameLost = true;
         }
+    print(currentWordInputs.map((i) => '${i.letter}: ${i.state}'));
         setState(() {});
         return;
       }
@@ -528,126 +541,126 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldState,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: sizePadding(size.width)),
-        child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SizedBox(
+              width: size.width,
+              height: size.height,
+              child: Column(
                 children: [
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  SizedBox(
+                    width: size.width,
+                    height: size.height,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: GestureDetector(
-                            onTap: _showMenu,
+                        SizedBox(
+                          height: 52,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                widget.menuImage,
-                                const SizedBox(width: 4),
-                                const Text(
-                                  // '$guessedWordsCount',
-                                  'Nápověda',
-                                  style: TextStyle(
-                                    fontSize: 20,
+                                MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: _showMenu,
+                                    child: Row(
+                                      children: [
+                                        widget.menuImage,
+                                        const SizedBox(width: 4),
+                                        const Text(
+                                          // '$guessedWordsCount',
+                                          'Nápověda',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
+                                if (guessedWordsCount > 0)
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.check,
+                                          color: Colors.green),
+                                      Text(
+                                        '$guessedWordsCount',
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                if (widget.activeLangs.length > 1)
+                                  LanguageButton(
+                                    activeLangs: widget.activeLangs,
+                                    selectedLang: selectedLang,
+                                    onChangeLang: changeLanguage,
+                                  ),
                               ],
                             ),
                           ),
                         ),
-                        if (guessedWordsCount > 0)
-                          Row(
-                            children: [
-                              const Icon(Icons.check, color: Colors.green),
-                              Text(
-                                '$guessedWordsCount',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
+                        if (kDebugMode)
+                          Text(
+                            'word: ${selectedWord!.word}',
+                            style: const TextStyle(fontSize: 8),
                           ),
-                        if (widget.activeLangs.length > 1)
-                          LanguageButton(
-                            activeLangs: widget.activeLangs,
-                            selectedLang: selectedLang,
-                            onChangeLang: changeLanguage,
-                          ),
-                      ],
-                    ),
-                  ),
-                  if (kDebugMode)
-                    Text(
-                      'word: ${selectedWord!.word}',
-                      style: const TextStyle(fontSize: 8),
-                    ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    flex: 12,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final height = (constraints.maxHeight - 6 * 8) / 6;
-                        final width = (constraints.maxWidth - tilesCount * 8) /
-                            tilesCount;
-                        return SizedBox(
-                          width: constraints.maxWidth,
-                          height: constraints.maxHeight,
-                          child: Column(
-                            children: List.generate(
-                              6,
-                              (index) => Row(
-                                children: List.generate(tilesCount, (i) {
-                                  final currentIndex = i + (index * tilesCount);
-                                  return ShakeAnimation(
-                                    controller: animationControllers[i],
-                                    animation: shakeAnimations[i],
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4),
-                                      child: WordleTile(
-                                        letter:
-                                            inputLetters[currentIndex].letter,
-                                        isFocused: isTileFocused(currentIndex),
-                                        state: inputLetters[currentIndex].state,
-                                        size: Size(width, height),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: List.generate(
+                                6,
+                                (index) => Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(tilesCount, (i) {
+                                    final currentIndex =
+                                        i + (index * tilesCount);
+                                    return ShakeAnimation(
+                                      controller: animationControllers[i],
+                                      animation: shakeAnimations[i],
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4),
+                                        child: WordleTile(
+                                          letter:
+                                              inputLetters[currentIndex].letter,
+                                          isFocused:
+                                              isTileFocused(currentIndex),
+                                          state:
+                                              inputLetters[currentIndex].state,
+                                          size: Size(
+                                              size.width / 7, size.width / 7),
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }),
+                                    );
+                                  }),
+                                ),
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    flex: 8,
-                    child: Container(
-                      alignment: Alignment.bottomCenter,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: gameWon || gameLost
-                          ? PostGameContainer(
+                        ),
+                        if (gameWon || gameLost) PostGameContainer(
                               onContinue: resetGame,
                               gameWon: gameWon,
                               answerWord: selectedWord!,
-                            )
-                          : Keyboard(
+                            ) else Keyboard(
                               onTap: inputLetter,
                               onSubmitWord: submitWord,
                               canSubmit: isWordComplete,
                               keyStates: keyStates,
                               specialCharsLang: selectedLang.code,
                             ),
+                      ],
                     ),
                   ),
                 ],
               ),
-      ),
+            ),
     );
+
   }
 }

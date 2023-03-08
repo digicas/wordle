@@ -176,6 +176,7 @@ class _KeyboardState extends State<Keyboard> {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               if (specialChars.isNotEmpty)
                 LayoutBuilder(
