@@ -166,7 +166,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         .where((i) => i.letter != null && i.state == TileState.empty)
         .toList();
 
-
     print(currentWordInputs.map((i) => '${i.letter}: ${i.state}'));
 
     //* check if word length is correct
@@ -228,7 +227,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           }
           input.state = TileState.correct;
           keyStates[input.letter!] = KeyState.correct;
-        } else if(input.state == TileState.empty) {
+        } else if (input.state == TileState.empty) {
           input.state = TileState.wrong;
         }
       } else {
@@ -239,15 +238,14 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     }
     //* check is all input letters are correct
     for (final input in currentWordInputs) {
-
-      if(input.state == TileState.empty) {
+      if (input.state == TileState.empty) {
         input.state = TileState.wrong;
       }
       if (input.state != TileState.correct) {
         if (hasLost) {
           gameLost = true;
         }
-    print(currentWordInputs.map((i) => '${i.letter}: ${i.state}'));
+        print(currentWordInputs.map((i) => '${i.letter}: ${i.state}'));
         setState(() {});
         return;
       }
@@ -612,48 +610,63 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           ),
                         Expanded(
                           child: SingleChildScrollView(
-                            child: Column(
-                              children: List.generate(
-                                6,
-                                (index) => Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(tilesCount, (i) {
-                                    final currentIndex =
-                                        i + (index * tilesCount);
-                                    return ShakeAnimation(
-                                      controller: animationControllers[i],
-                                      animation: shakeAnimations[i],
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4),
-                                        child: WordleTile(
-                                          letter:
-                                              inputLetters[currentIndex].letter,
-                                          isFocused:
-                                              isTileFocused(currentIndex),
-                                          state:
-                                              inputLetters[currentIndex].state,
-                                          size: Size(
-                                              size.width / 7, size.width / 7),
-                                        ),
-                                      ),
-                                    );
-                                  }),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: sizePadding(size.width),
+                              ),
+                              child: Column(
+                                children: List.generate(
+                                  6,
+                                  (index) => LayoutBuilder(
+                                    builder: (context,constraints) {
+                                      print(constraints.maxWidth);
+                                      return Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: List.generate(tilesCount, (i) {
+                                          final currentIndex =
+                                              i + (index * tilesCount);
+                                          return ShakeAnimation(
+                                            controller: animationControllers[i],
+                                            animation: shakeAnimations[i],
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(4),
+                                              child: WordleTile(
+                                                letter: inputLetters[currentIndex]
+                                                    .letter,
+                                                isFocused:
+                                                    isTileFocused(currentIndex),
+                                                state: inputLetters[currentIndex]
+                                                    .state,
+                                                size: Size(
+                                                  constraints.maxWidth / (tilesCount + 1),
+                                                  70,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        if (gameWon || gameLost) PostGameContainer(
-                              onContinue: resetGame,
-                              gameWon: gameWon,
-                              answerWord: selectedWord!,
-                            ) else Keyboard(
-                              onTap: inputLetter,
-                              onSubmitWord: submitWord,
-                              canSubmit: isWordComplete,
-                              keyStates: keyStates,
-                              specialCharsLang: selectedLang.code,
-                            ),
+                        if (gameWon || gameLost)
+                          PostGameContainer(
+                            onContinue: resetGame,
+                            gameWon: gameWon,
+                            answerWord: selectedWord!,
+                          )
+                        else
+                          Keyboard(
+                            onTap: inputLetter,
+                            onSubmitWord: submitWord,
+                            canSubmit: isWordComplete,
+                            keyStates: keyStates,
+                            specialCharsLang: selectedLang.code,
+                          ),
                       ],
                     ),
                   ),
@@ -661,6 +674,5 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               ),
             ),
     );
-
   }
 }
