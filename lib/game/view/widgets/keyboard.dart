@@ -157,9 +157,14 @@ class _KeyboardState extends State<Keyboard> {
       children: [
         GestureDetector(
           key: keyboardKey,
-          onPanDown: (details) => onShowKey(details.localPosition, context),
-          onPanUpdate: (details) =>
-              onShownKeyChanged(details.localPosition, context),
+          onPanDown: (details) => {
+            print('onPanDown'),
+            onShowKey(details.localPosition, context)
+          },
+          onPanUpdate: (details) => {
+            print('OnPanUpdate'),
+            onShownKeyChanged(details.localPosition, context)
+          },
           onPanEnd: (details) => setState(
             () => {
               widget.onTap(shownKey?? ''),
