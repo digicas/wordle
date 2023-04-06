@@ -162,6 +162,8 @@ class _KeyboardState extends State<Keyboard> {
               onShownKeyChanged(details.localPosition, context),
           onPanEnd: (details) => setState(
             () => {
+              widget.onTap(shownKey?? ''),
+              print('onPanEnd'),
               shownKey = null,
               shownKeyPosition = null,
               shownTileSize = null,
@@ -169,6 +171,8 @@ class _KeyboardState extends State<Keyboard> {
           ),
           onPanCancel: () => setState(
             () => {
+              widget.onTap(shownKey?? ''),
+              print('onPanCancel'),
               shownKey = null,
               shownKeyPosition = null,
               shownTileSize = null,

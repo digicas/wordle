@@ -166,7 +166,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         .where((i) => i.letter != null && i.state == TileState.empty)
         .toList();
 
-    print(currentWordInputs.map((i) => '${i.letter}: ${i.state}'));
 
     //* check if word length is correct
     if (currentWordInputs.length != tilesCount) {
@@ -245,7 +244,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         if (hasLost) {
           gameLost = true;
         }
-        print(currentWordInputs.map((i) => '${i.letter}: ${i.state}'));
         setState(() {});
         return;
       }
@@ -619,7 +617,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                   6,
                                   (index) => LayoutBuilder(
                                     builder: (context,constraints) {
-                                      print(constraints.maxWidth);
                                       return Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: List.generate(tilesCount, (i) {
