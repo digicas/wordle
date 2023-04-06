@@ -182,10 +182,10 @@ class _KeyboardState extends State<Keyboard> {
             //   print('onPanDown'),
             //   onShowKey(details.localPosition, context)
             // },
-            onPanUpdate: isEnabled ?(details) => {
+            onPanUpdate: isEnabled ? (details) => {
               print('OnPanUpdate'),
               onShownKeyChanged(details.localPosition, context)
-            } : null,
+            } : (_) {},
             // onPanEnd: (details) => setState(
             //   () => {
             //     widget.onTap(shownKey?? ''),
