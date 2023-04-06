@@ -163,6 +163,7 @@ class _KeyboardState extends State<Keyboard> {
           onPanEnd: (details) => setState(
             () => {
               widget.onTap(shownKey?? ''),
+              HapticFeedback.lightImpact(),
               print('onPanEnd'),
               shownKey = null,
               shownKeyPosition = null,
@@ -172,6 +173,7 @@ class _KeyboardState extends State<Keyboard> {
           onPanCancel: () => setState(
             () => {
               widget.onTap(shownKey?? ''),
+              HapticFeedback.lightImpact(),
               print('onPanCancel'),
               shownKey = null,
               shownKeyPosition = null,
@@ -359,49 +361,42 @@ class KeyboardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        HapticFeedback.lightImpact();
-        onTap(char);
-      },
-      child: SizedBox(
-        width: width,
-        child: Container(
-          margin: EdgeInsets.all(
-            padding(screenWidth),
-          ),
-          width: width - screenWidth > 1078 ? 8 : 4,
-          height: _getSize(screenWidth),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: state == KeyState.correct
-                ? Colors.green
-                : state == KeyState.contains
-                    ? Colors.orange
-                    : state == KeyState.wrong
-                        ? const Color(0xffC4C4C4)
-                        : char == '⏎'
-                            ? Colors.lightBlue
-                            : char == '⌫'
-                                ? Colors.redAccent[400]
-                                : const Color(0xffE4E4E4),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Text(
-            char != 'ẞ' ? char.toUpperCase() : 'ẞ',
-            style: TextStyle(
-              color: char == '⏎' || char == '⌫' ? Colors.white : Colors.black,
-              fontSize: screenWidth > 1078
-                  ? 24
-                  : screenWidth > 768
-                      ? 22
-                      : screenWidth > 400
-                          ? 22
-                          : 18,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Roboto',
-            ),
+    return SizedBox(
+      width: width,
+      child: Container(
+        margin: EdgeInsets.all(
+          padding(screenWidth),
+        ),
+        width: width - screenWidth > 1078 ? 8 : 4,
+        height: _getSize(screenWidth),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: state == KeyState.correct
+              ? Colors.green
+              : state == KeyState.contains
+                  ? Colors.orange
+                  : state == KeyState.wrong
+                      ? const Color(0xffC4C4C4)
+                      : char == '⏎'
+                          ? Colors.lightBlue
+                          : char == '⌫'
+                              ? Colors.redAccent[400]
+                              : const Color(0xffE4E4E4),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          char != 'ẞ' ? char.toUpperCase() : 'ẞ',
+          style: TextStyle(
+            color: char == '⏎' || char == '⌫' ? Colors.white : Colors.black,
+            fontSize: screenWidth > 1078
+                ? 24
+                : screenWidth > 768
+                    ? 22
+                    : screenWidth > 400
+                        ? 22
+                        : 18,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'Roboto',
           ),
         ),
       ),
