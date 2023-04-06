@@ -162,7 +162,6 @@ class _KeyboardState extends State<Keyboard> {
               setState(() {
                 isEnabled = true;
               });
-              print('onPanDown');
               onShowKey(event.localPosition, context);
             },
             onPointerUp: (event) {
@@ -171,41 +170,15 @@ class _KeyboardState extends State<Keyboard> {
               });
               widget.onTap(shownKey?? '');
                 HapticFeedback.lightImpact();
-                print('onPanCancel');
                 shownKey = null;
                 shownKeyPosition = null;
                 shownTileSize = null;
             },
           child: GestureDetector(
             key: keyboardKey,
-            // onPanDown: (details) => {
-            //   print('onPanDown'),
-            //   onShowKey(details.localPosition, context)
-            // },
             onPanUpdate: isEnabled ? (details) => {
-              print('OnPanUpdate'),
               onShownKeyChanged(details.localPosition, context)
             } : (_) {},
-            // onPanEnd: (details) => setState(
-            //   () => {
-            //     widget.onTap(shownKey?? ''),
-            //     HapticFeedback.lightImpact(),
-            //     print('onPanEnd'),
-            //     shownKey = null,
-            //     shownKeyPosition = null,
-            //     shownTileSize = null,
-            //   },
-            // ),
-            // onPanCancel: () => setState(
-            //   () => {
-            //     widget.onTap(shownKey?? ''),
-            //     HapticFeedback.lightImpact(),
-            //     print('onPanCancel'),
-            //     shownKey = null,
-            //     shownKeyPosition = null,
-            //     shownTileSize = null,
-            //   },
-            // ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
