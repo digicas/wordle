@@ -48,7 +48,7 @@ class Keyboard extends StatefulWidget {
   final bool canSubmit;
   final Map<String, KeyState> keyStates;
   final void Function(String) onTap;
-  final void Function(String) onSubmitWord;
+  final void Function() onSubmitWord;
 
   @override
   State<Keyboard> createState() => _KeyboardState();
@@ -159,26 +159,31 @@ class _KeyboardState extends State<Keyboard> {
       children: [
         Listener(
           onPointerDown: (event) {
-              setState(() {
-                isEnabled = true;
-              });
-              onShowKey(event.localPosition, context);
-            },
-            onPointerUp: (event) {
-              setState(() {
-                isEnabled = false;
-              });
-              widget.onTap(shownKey?? '');
-                HapticFeedback.lightImpact();
-                shownKey = null;
-                shownKeyPosition = null;
-                shownTileSize = null;
-            },
+            setState(() {
+              isEnabled = true;
+            });
+            onShowKey(event.localPosition, context);
+          },
+          onPointerUp: (event) {
+            setState(() {
+              isEnabled = false;
+            });
+            if (shownKey == '⏎') {
+              widget.onSubmitWord();
+            } else {
+              widget.onTap(shownKey ?? '');
+            }
+            HapticFeedback.lightImpact();
+            shownKey = null;
+            shownKeyPosition = null;
+            shownTileSize = null;
+          },
           child: GestureDetector(
             key: keyboardKey,
-            onPanUpdate: isEnabled ? (details) => {
-              onShownKeyChanged(details.localPosition, context)
-            } : (_) {},
+            onPanUpdate: isEnabled
+                ? (details) =>
+                    {onShownKeyChanged(details.localPosition, context)}
+                : (_) {},
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -191,7 +196,6 @@ class _KeyboardState extends State<Keyboard> {
                         children: [
                           ...specialChars.map(
                             (ch) => KeyboardTile(
-                              onTap: widget.onTap,
                               char: ch,
                               state: getStateByChar(ch),
                               width: width,
@@ -208,7 +212,6 @@ class _KeyboardState extends State<Keyboard> {
                       children: List.generate(
                         10,
                         (index) => KeyboardTile(
-                          onTap: widget.onTap,
                           char: Keyboard.chars[index],
                           state: getStateByChar(Keyboard.chars[index]),
                           width: width,
@@ -224,7 +227,6 @@ class _KeyboardState extends State<Keyboard> {
                       children: List.generate(
                         9,
                         (index) => KeyboardTile(
-                          onTap: widget.onTap,
                           char: Keyboard.chars[index + 10],
                           state: getStateByChar(Keyboard.chars[index + 10]),
                           width: width,
@@ -238,7 +240,6 @@ class _KeyboardState extends State<Keyboard> {
                     return Row(
                       children: [
                         KeyboardTile(
-                          onTap: widget.onTap,
                           char: '⌫',
                           state: KeyState.clear,
                           width: constraints.maxWidth / 9,
@@ -246,7 +247,6 @@ class _KeyboardState extends State<Keyboard> {
                         ...List.generate(
                           7,
                           (index) => KeyboardTile(
-                            onTap: widget.onTap,
                             char: Keyboard.chars[index + 19],
                             state: getStateByChar(Keyboard.chars[index + 19]),
                             width: constraints.maxWidth / 9,
@@ -254,7 +254,6 @@ class _KeyboardState extends State<Keyboard> {
                         ),
                         if (widget.canSubmit)
                           KeyboardTile(
-                            onTap: widget.onSubmitWord,
                             char: '⏎',
                             state: KeyState.clear,
                             width: constraints.maxWidth / 9,
@@ -327,13 +326,11 @@ class _KeyboardState extends State<Keyboard> {
 class KeyboardTile extends StatelessWidget {
   const KeyboardTile({
     super.key,
-    required this.onTap,
     required this.char,
     required this.state,
     required this.width,
   });
 
-  final void Function(String) onTap;
   final String char;
   final double width;
   final KeyState state;

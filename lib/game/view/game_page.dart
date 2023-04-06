@@ -160,7 +160,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     });
   }
 
-  void submitWord(String _) {
+  void submitWord() {
     //* get current word from input
     final currentWordInputs = inputLetters
         .where((i) => i.letter != null && i.state == TileState.empty)
