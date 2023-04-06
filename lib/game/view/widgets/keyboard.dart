@@ -150,126 +150,148 @@ class _KeyboardState extends State<Keyboard> {
     return result;
   }
 
+  bool isEnabled = false;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        GestureDetector(
-          key: keyboardKey,
-          onPanDown: (details) => {
-            print('onPanDown'),
-            onShowKey(details.localPosition, context)
-          },
-          onPanUpdate: (details) => {
-            print('OnPanUpdate'),
-            onShownKeyChanged(details.localPosition, context)
-          },
-          onPanEnd: (details) => setState(
-            () => {
-              widget.onTap(shownKey?? ''),
-              HapticFeedback.lightImpact(),
-              print('onPanEnd'),
-              shownKey = null,
-              shownKeyPosition = null,
-              shownTileSize = null,
+        Listener(
+          onPointerDown: (event) {
+              setState(() {
+                isEnabled = true;
+              });
+              print('onPanDown');
+              onShowKey(event.localPosition, context);
             },
-          ),
-          onPanCancel: () => setState(
-            () => {
-              widget.onTap(shownKey?? ''),
-              HapticFeedback.lightImpact(),
-              print('onPanCancel'),
-              shownKey = null,
-              shownKeyPosition = null,
-              shownTileSize = null,
+            onPointerUp: (event) {
+              setState(() {
+                isEnabled = false;
+              });
+              widget.onTap(shownKey?? '');
+                HapticFeedback.lightImpact();
+                print('onPanCancel');
+                shownKey = null;
+                shownKeyPosition = null;
+                shownTileSize = null;
             },
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (specialChars.isNotEmpty)
+          child: GestureDetector(
+            key: keyboardKey,
+            // onPanDown: (details) => {
+            //   print('onPanDown'),
+            //   onShowKey(details.localPosition, context)
+            // },
+            onPanUpdate: isEnabled ?(details) => {
+              print('OnPanUpdate'),
+              onShownKeyChanged(details.localPosition, context)
+            } : null,
+            // onPanEnd: (details) => setState(
+            //   () => {
+            //     widget.onTap(shownKey?? ''),
+            //     HapticFeedback.lightImpact(),
+            //     print('onPanEnd'),
+            //     shownKey = null,
+            //     shownKeyPosition = null,
+            //     shownTileSize = null,
+            //   },
+            // ),
+            // onPanCancel: () => setState(
+            //   () => {
+            //     widget.onTap(shownKey?? ''),
+            //     HapticFeedback.lightImpact(),
+            //     print('onPanCancel'),
+            //     shownKey = null,
+            //     shownKeyPosition = null,
+            //     shownTileSize = null,
+            //   },
+            // ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (specialChars.isNotEmpty)
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final width = constraints.maxWidth / specialChars.length;
+                      return Row(
+                        children: [
+                          ...specialChars.map(
+                            (ch) => KeyboardTile(
+                              onTap: widget.onTap,
+                              char: ch,
+                              state: getStateByChar(ch),
+                              width: width,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    final width = constraints.maxWidth / specialChars.length;
+                    final width = constraints.maxWidth / 10;
+                    return Row(
+                      children: List.generate(
+                        10,
+                        (index) => KeyboardTile(
+                          onTap: widget.onTap,
+                          char: Keyboard.chars[index],
+                          state: getStateByChar(Keyboard.chars[index]),
+                          width: width,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final width = constraints.maxWidth / 9;
+                    return Row(
+                      children: List.generate(
+                        9,
+                        (index) => KeyboardTile(
+                          onTap: widget.onTap,
+                          char: Keyboard.chars[index + 10],
+                          state: getStateByChar(Keyboard.chars[index + 10]),
+                          width: width,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
                     return Row(
                       children: [
-                        ...specialChars.map(
-                          (ch) => KeyboardTile(
+                        KeyboardTile(
+                          onTap: widget.onTap,
+                          char: '⌫',
+                          state: KeyState.clear,
+                          width: constraints.maxWidth / 9,
+                        ),
+                        ...List.generate(
+                          7,
+                          (index) => KeyboardTile(
                             onTap: widget.onTap,
-                            char: ch,
-                            state: getStateByChar(ch),
-                            width: width,
+                            char: Keyboard.chars[index + 19],
+                            state: getStateByChar(Keyboard.chars[index + 19]),
+                            width: constraints.maxWidth / 9,
                           ),
                         ),
+                        if (widget.canSubmit)
+                          KeyboardTile(
+                            onTap: widget.onSubmitWord,
+                            char: '⏎',
+                            state: KeyState.clear,
+                            width: constraints.maxWidth / 9,
+                          ),
                       ],
                     );
                   },
                 ),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final width = constraints.maxWidth / 10;
-                  return Row(
-                    children: List.generate(
-                      10,
-                      (index) => KeyboardTile(
-                        onTap: widget.onTap,
-                        char: Keyboard.chars[index],
-                        state: getStateByChar(Keyboard.chars[index]),
-                        width: width,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final width = constraints.maxWidth / 9;
-                  return Row(
-                    children: List.generate(
-                      9,
-                      (index) => KeyboardTile(
-                        onTap: widget.onTap,
-                        char: Keyboard.chars[index + 10],
-                        state: getStateByChar(Keyboard.chars[index + 10]),
-                        width: width,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  return Row(
-                    children: [
-                      KeyboardTile(
-                        onTap: widget.onTap,
-                        char: '⌫',
-                        state: KeyState.clear,
-                        width: constraints.maxWidth / 9,
-                      ),
-                      ...List.generate(
-                        7,
-                        (index) => KeyboardTile(
-                          onTap: widget.onTap,
-                          char: Keyboard.chars[index + 19],
-                          state: getStateByChar(Keyboard.chars[index + 19]),
-                          width: constraints.maxWidth / 9,
-                        ),
-                      ),
-                      if (widget.canSubmit)
-                        KeyboardTile(
-                          onTap: widget.onSubmitWord,
-                          char: '⏎',
-                          state: KeyState.clear,
-                          width: constraints.maxWidth / 9,
-                        ),
-                    ],
-                  );
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         if (shownKey != null &&
