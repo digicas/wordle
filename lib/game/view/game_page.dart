@@ -23,6 +23,7 @@ class GameScreen extends StatefulWidget {
     required this.onLevelStarted,
     required this.menuImage,
     required this.langsWithHints,
+    required this.showTranslation,
   });
 
   final List<Language> activeLangs;
@@ -30,6 +31,7 @@ class GameScreen extends StatefulWidget {
   final void Function(int) onFinished;
   final void Function() onLevelStarted;
   final Image menuImage;
+  final bool showTranslation;
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -655,6 +657,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             onContinue: resetGame,
                             gameWon: gameWon,
                             answerWord: selectedWord!,
+                            showTranslation: widget.showTranslation,
                           )
                         else
                           Keyboard(

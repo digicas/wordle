@@ -5,10 +5,12 @@ class PostGameContainer extends StatelessWidget {
   const PostGameContainer({
     super.key,
     required this.gameWon,
+    required this.showTranslation,
     required this.answerWord,
     required this.onContinue,
   });
 
+  final bool showTranslation;
   final bool gameWon;
   final AnswerWord answerWord;
   final VoidCallback onContinue;
@@ -38,7 +40,7 @@ class PostGameContainer extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '${answerWord.word} $translation',
+            '${answerWord.word} ${showTranslation ? translation : ''}',
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 24,
