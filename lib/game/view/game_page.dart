@@ -168,7 +168,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         .where((i) => i.letter != null && i.state == TileState.empty)
         .toList();
 
-
     //* check if word length is correct
     if (currentWordInputs.length != tilesCount) {
       return;
@@ -443,8 +442,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         child: SingleChildScrollView(
                                           child: InstructionsView(
                                             activeLang: selectedLang,
-                                            showGerman:
-                                                selectedLang == Language.german,
                                           ),
                                         ),
                                       ),
@@ -519,7 +516,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         : SingleChildScrollView(
                             child: InstructionsView(
                               activeLang: selectedLang,
-                              showGerman: selectedLang == Language.german,
                             ),
                           ),
                   ),
@@ -618,10 +614,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 children: List.generate(
                                   6,
                                   (index) => LayoutBuilder(
-                                    builder: (context,constraints) {
+                                    builder: (context, constraints) {
                                       return Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: List.generate(tilesCount, (i) {
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children:
+                                            List.generate(tilesCount, (i) {
                                           final currentIndex =
                                               i + (index * tilesCount);
                                           return ShakeAnimation(
@@ -630,14 +628,17 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                             child: Padding(
                                               padding: const EdgeInsets.all(4),
                                               child: WordleTile(
-                                                letter: inputLetters[currentIndex]
-                                                    .letter,
+                                                letter:
+                                                    inputLetters[currentIndex]
+                                                        .letter,
                                                 isFocused:
                                                     isTileFocused(currentIndex),
-                                                state: inputLetters[currentIndex]
-                                                    .state,
+                                                state:
+                                                    inputLetters[currentIndex]
+                                                        .state,
                                                 size: Size(
-                                                  constraints.maxWidth / (tilesCount + 1),
+                                                  constraints.maxWidth /
+                                                      (tilesCount + 1),
                                                   70,
                                                 ),
                                               ),
