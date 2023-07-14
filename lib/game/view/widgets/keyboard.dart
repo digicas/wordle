@@ -102,7 +102,7 @@ class _KeyboardState extends State<Keyboard> {
                   ? 10
                   : 9);
     } else {
-      tileSize = size.width / (currentRow == 0 ? 10 : 0);
+      tileSize = size.width / (currentRow == 0 ? 10 : 9);
     }
     shownTileSize = tileSize;
     final currentColumn = (pos.dx / tileSize).floor();
