@@ -150,7 +150,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   void inputLetter(String letter) {
     setState(() {
-      if (letter != '⌫') {
+      if (letter != '⌫' && letter != '') {
         if (!isWordComplete) {
           inputLetters.firstWhere((i) => i.letter == null).letter = letter;
         }
