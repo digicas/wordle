@@ -4,7 +4,9 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wordle/app_locale.dart';
 import 'package:wordle/game/view/widgets/keyboard.dart';
 import 'package:wordle/game/view/widgets/language_button.dart';
 import 'package:wordle/game/view/widgets/post_game_container.dart';
@@ -393,11 +395,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         ),
                                       ),
                                     ),
-                                    child: const FittedBox(
+                                    child: FittedBox(
                                       fit: BoxFit.scaleDown,
                                       child: Text(
-                                        'Jak hrát',
-                                        style: TextStyle(
+                                        AppLocale.howToPlay.getString(context),
+                                        style: const TextStyle(
                                           fontSize: 28,
                                           color: Colors.black,
                                         ),
@@ -416,11 +418,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     alignment: Alignment.center,
-                                    child: const FittedBox(
+                                    child: FittedBox(
                                       fit: BoxFit.scaleDown,
                                       child: Text(
-                                        'Nápověda',
-                                        style: TextStyle(
+                                        AppLocale.hint.getString(context),
+                                        style: const TextStyle(
                                           fontSize: 28,
                                           color: Colors.black,
                                         ),
@@ -442,6 +444,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         child: SingleChildScrollView(
                                           child: InstructionsView(
                                             activeLang: selectedLang,
+                                            showTranslate:
+                                                widget.showTranslation,
                                           ),
                                         ),
                                       ),
@@ -516,6 +520,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         : SingleChildScrollView(
                             child: InstructionsView(
                               activeLang: selectedLang,
+                              showTranslate: widget.showTranslation,
                             ),
                           ),
                   ),
@@ -565,10 +570,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                       children: [
                                         widget.menuImage,
                                         const SizedBox(width: 4),
-                                        const Text(
+                                        Text(
                                           // '$guessedWordsCount',
-                                          'Nápověda',
-                                          style: TextStyle(
+                                          AppLocale.hint.getString(context),
+                                          style: const TextStyle(
                                             fontSize: 20,
                                           ),
                                         ),
@@ -579,8 +584,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 if (guessedWordsCount > 0)
                                   Row(
                                     children: [
-                                      const Icon(Icons.check,
-                                          color: Colors.green),
+                                      const Icon(
+                                        Icons.check,
+                                        color: Colors.green,
+                                      ),
                                       Text(
                                         '$guessedWordsCount',
                                         style: const TextStyle(

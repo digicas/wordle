@@ -19,7 +19,8 @@ class WordleExampleApp extends StatelessWidget {
         langs: const ['cs', 'en', 'de'],
         showTranslation: true,
         menuImage: Image.network(
-            'https://cdn-icons-png.flaticon.com/512/6780/6780485.png'),
+          'https://cdn-icons-png.flaticon.com/512/6780/6780485.png',
+        ),
       ),
     );
   }

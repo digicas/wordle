@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:wordle/app_locale.dart';
 import 'package:wordle/models/answer_word.dart';
 
 class PostGameContainer extends StatelessWidget {
@@ -32,7 +34,9 @@ class PostGameContainer extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            gameWon ? 'SPRÁVNĚ' : 'ŠPATNĚ',
+            gameWon
+                ? AppLocale.correct.getString(context)
+                : AppLocale.wrong.getString(context),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 28,
@@ -61,9 +65,9 @@ class PostGameContainer extends StatelessWidget {
                 color: const Color(0xffE4E4E4),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text(
-                'Pokračovat',
-                style: TextStyle(
+              child: Text(
+                AppLocale.next.getString(context),
+                style: const TextStyle(
                   fontSize: 22,
                 ),
               ),

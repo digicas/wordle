@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 class LanguageButton extends StatelessWidget {
-  const LanguageButton({
+  LanguageButton({
     super.key,
     required this.activeLangs,
     required this.selectedLang,
     required this.onChangeLang,
   });
 
+  final FlutterLocalization _localization = FlutterLocalization.instance;
+
   final List<Language> activeLangs;
   final Language selectedLang;
   final void Function(Language) onChangeLang;
 
+  void changeLanguageAndLocale() {
+    final nextLanguage = selectedLang.nextLanguge(activeLangs);
+    onChangeLang(nextLanguage);
+    _localization.translate(nextLanguage.code);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onChangeLang(selectedLang.nextLanguge(activeLangs)),
+      onTap: () => changeLanguageAndLocale(),
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(

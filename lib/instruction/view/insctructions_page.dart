@@ -5,9 +5,11 @@ class InstructionsView extends StatelessWidget {
   const InstructionsView({
     super.key,
     required this.activeLang,
+    required this.showTranslate,
   });
 
   final Language activeLang;
+  final bool showTranslate;
 
   TextStyle get baseStyle => const TextStyle(
         fontSize: 22,
@@ -24,8 +26,7 @@ class InstructionsView extends StatelessWidget {
 
   int get wordLength => activeLang == Language.german ? 6 : 5;
 
-  bool get showTranslation =>
-      activeLang.code == 'de' || activeLang.code == 'en';
+  bool get showTranslation => activeLang.code != 'cs' && showTranslate;
 
   String get exampleWords => activeLang == Language.german
       ? 'NEHMEN, LAUFEN, BOSENS '
@@ -35,69 +36,69 @@ class InstructionsView extends StatelessWidget {
               ? 'TENIS, TABLE, CHAIR'
               : '';
 
-  Map<String, Map<String, String>> get translations  => {
-    'cs': {
-      'rules': 'Pravidla',
-      'info': 'Hádáte podstatné jméno 5 znaků dlouhé, které hra zná. Např.',
-      'etc': 'apod.',
-      'guess': 'Postupně zadávejte své tipy.',
-      'undo': 'Mazat můžete klávesou ',
-      'undoKey': 'Backspace (⌫) ',
-      'submit': 'Tipy potvrzujte klávesou ',
-      'submitKey': 'Enter (⏎) ',
-      'how': 'Hra každý tip vyhodnotí a označí:',
-      'wrong': 'Pokud písmena v hledaném slově ',
-      'wrongValue': 'nejsou: ',
-      'index': 'Písmena v hledaném slově ',
-      'indexValue': 'jsou, ',
-      'indexValue2': 'ale na jiné pozici:',
-      'correct': 'Písmena ležící ',
-      'correctValue': 'na správné pozici:',
-      'word': 'Uhádnuté slovo:',
-      'tries': 'Máte 6 pokusů.',
-    },
-    'de': {
-      'rules': ' (Regeln)',
-      'info': '(Sie erraten ein Wort mit 6 Buchstaben. Zum Beispiel.',
-      'etc': 'usw.)',
-      'guess': '(Sie versuchen, Ihre Tipps nacheinander einzugeben.)',
-      'undo': '(Sie können mit der  ',
-      'undoKey': 'Rückschritttaste (⌫) löschen)',
-      'submit': '(Bestätigen Sie mit der Taste ',
-      'submitKey': 'Enter (⏎) ',
-      'how': 'und das Spiel markiert dieses Wort)',
-      'wrong': '(Wenn die Buchstaben des Suchworts ',
-      'wrongValue': 'nicht:) ',
-      'index': '(Die im Suchwort enthaltenen Buchstaben,',
-      'indexValue': 'aber Raupen ',
-      'indexValue2': 'in der falschen Position:)',
-      'correct': '(Der Buchstabe klettert ',
-      'correctValue': 'an der richtigen Stelle:)',
-      'word': '(Ein erratenes Wort:)',
-      'tries': '(Du hast 6 Versuche.)',
-    },
-    'en': {
-      'rules': '(Rules)',
-      'info':
-          '(You guess a noun 5 characters long that the game knows. For example.',
-      'etc': 'etc.)',
-      'guess': '(Enter your tips one by one.)',
-      'undo': '(You can delete by pressing ',
-      'undoKey': 'Backspace (⌫) )',
-      'submit': '(Confirm your picks with the key ',
-      'submitKey': 'Enter (⏎) ',
-      'how': 'The game evaluates and marks each guess: )',
-      'wrong': '(If the letters in the guess word ',
-      'wrongValue': 'are not:)',
-      'index': '(Letters in the guess word ',
-      'indexValue': 'are ',
-      'indexValue2': 'but in a different position:)',
-      'correct': '(Letters are ',
-      'correctValue': 'on a correct position:',
-      'word': '(Guessed Word:)',
-      'tries': '(You have 6 tries.)',
-    }
-  };
+  Map<String, Map<String, String>> get translations => {
+        'cs': {
+          'rules': 'Pravidla',
+          'info': 'Hádáte podstatné jméno 5 znaků dlouhé, které hra zná. Např.',
+          'etc': 'apod.',
+          'guess': 'Postupně zadávejte své tipy.',
+          'undo': 'Mazat můžete klávesou ',
+          'undoKey': 'Backspace (⌫)',
+          'submit': 'Tipy potvrzujte klávesou ',
+          'submitKey': 'Enter (⏎) ',
+          'how': 'Hra každý tip vyhodnotí a označí:',
+          'wrong': 'Pokud písmena v hledaném slově ',
+          'wrongValue': 'nejsou:',
+          'index': 'Písmena v hledaném slově ',
+          'indexValue': 'jsou, ',
+          'indexValue2': 'ale na jiné pozici:',
+          'correct': 'Písmena ležící ',
+          'correctValue': 'na správné pozici:',
+          'word': 'Uhádnuté slovo:',
+          'tries': 'Máte 6 pokusů.',
+        },
+        'de': {
+          'rules': 'Regeln',
+          'info': 'Sie erraten ein Wort mit 6 Buchstaben. Zum Beispiel.',
+          'etc': 'usw.',
+          'guess': 'Sie versuchen, Ihre Tipps nacheinander einzugeben.',
+          'undo': 'Sie können mit der  ',
+          'undoKey': 'Rückschritttaste (⌫) löschen',
+          'submit': 'Bestätigen Sie mit der Taste ',
+          'submitKey': 'Enter (⏎) ',
+          'how': 'und das Spiel markiert dieses Wort',
+          'wrong': 'Wenn die Buchstaben des Suchworts ',
+          'wrongValue': 'nicht: ',
+          'index': 'Die im Suchwort enthaltenen Buchstaben,',
+          'indexValue': 'aber Raupen ',
+          'indexValue2': 'in der falschen Position:',
+          'correct': 'Der Buchstabe klettert ',
+          'correctValue': 'an der richtigen Stelle:',
+          'word': 'Ein erratenes Wort:',
+          'tries': 'Du hast 6 Versuche.',
+        },
+        'en': {
+          'rules': 'Rules',
+          'info':
+              'You guess a noun 5 characters long that the game knows. For example.',
+          'etc': 'etc.',
+          'guess': 'Enter your tips one by one.',
+          'undo': 'You can delete by pressing ',
+          'undoKey': 'Backspace (⌫) ',
+          'submit': 'Confirm your picks with the key ',
+          'submitKey': 'Enter (⏎) ',
+          'how': 'The game evaluates and marks each guess: ',
+          'wrong': 'If the letters in the guess word ',
+          'wrongValue': 'are not:',
+          'index': 'Letters in the guess word ',
+          'indexValue': 'are ',
+          'indexValue2': 'but in a different position:',
+          'correct': 'Letters are ',
+          'correctValue': 'on a correct position:',
+          'word': 'Guessed Word:',
+          'tries': 'You have 6 tries.',
+        }
+      };
 
   String translate(String key, [String? lang]) {
     return translations[lang ?? 'cs']![key] ?? '';
@@ -113,7 +114,7 @@ class InstructionsView extends StatelessWidget {
             TextSpan(
               children: [
                 TextSpan(
-                  text: translate('rules'),
+                  text: translate('rules', activeLang.code),
                   style: const TextStyle(
                     fontSize: 44,
                     fontWeight: FontWeight.w500,
@@ -121,7 +122,7 @@ class InstructionsView extends StatelessWidget {
                 ),
                 if (showTranslation)
                   TextSpan(
-                    text: translate('rules', activeLang.code),
+                    text: ' (${translate('rules')})',
                     style: const TextStyle(
                       fontSize: 44,
                       fontWeight: FontWeight.w500,
@@ -132,7 +133,7 @@ class InstructionsView extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            translate('info'),
+            translate('info', activeLang.code),
             maxLines: 4,
             style: baseStyle,
           ),
@@ -142,7 +143,7 @@ class InstructionsView extends StatelessWidget {
               children: [
                 TextSpan(text: '$exampleWords, ', style: boldStyle),
                 TextSpan(
-                  text: translate('etc'),
+                  text: translate('etc', activeLang.code),
                   style: baseStyle,
                 ),
               ],
@@ -153,7 +154,7 @@ class InstructionsView extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 Text(
-                  translate('info', activeLang.code),
+                  '(${translate('info')}',
                   style: baseTranslation,
                 ),
                 const SizedBox(height: 8),
@@ -162,7 +163,7 @@ class InstructionsView extends StatelessWidget {
                     children: [
                       TextSpan(text: '$exampleWords ', style: boldStyle),
                       TextSpan(
-                        text: translate('etc', activeLang.code),
+                        text: '${translate('etc')})',
                         style: baseTranslation,
                       ),
                     ],
@@ -172,7 +173,7 @@ class InstructionsView extends StatelessWidget {
             ),
           const SizedBox(height: 12),
           Text(
-            translate('guess'),
+            translate('guess', activeLang.code),
             style: baseStyle,
           ),
           if (showTranslation)
@@ -180,7 +181,7 @@ class InstructionsView extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 Text(
-                  translate('guess', activeLang.code),
+                  '(${translate('guess')})',
                   style: baseTranslation,
                 ),
               ],
@@ -189,9 +190,10 @@ class InstructionsView extends StatelessWidget {
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: translate('undo'), style: baseStyle),
                 TextSpan(
-                  text: translate('undoKey'),
+                    text: translate('undo', activeLang.code), style: baseStyle),
+                TextSpan(
+                  text: translate('undoKey', activeLang.code),
                   style: boldStyle,
                 ),
               ],
@@ -203,10 +205,11 @@ class InstructionsView extends StatelessWidget {
               TextSpan(
                 children: [
                   TextSpan(
-                      text: translate('undo', activeLang.code),
-                      style: baseTranslation),
+                    text: '(${translate('undo')}',
+                    style: baseTranslation,
+                  ),
                   TextSpan(
-                    text: translate('undoKey', activeLang.code),
+                    text: '${translate('undoKey')})',
                     style: boldTranslation,
                   ),
                 ],
@@ -216,16 +219,22 @@ class InstructionsView extends StatelessWidget {
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: translate('submit'), style: baseStyle),
                 TextSpan(
-                  text: translate('submitKey'),
+                  text: translate('submit', activeLang.code),
+                  style: baseStyle,
+                ),
+                TextSpan(
+                  text: translate('submitKey', activeLang.code),
                   style: boldStyle,
                 ),
               ],
             ),
           ),
           const SizedBox(height: 4),
-          Text(translate('how'), style: baseStyle),
+          Text(
+            translate('how', activeLang.code),
+            style: baseStyle,
+          ),
           if (showTranslation)
             Column(
               children: [
@@ -234,11 +243,11 @@ class InstructionsView extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: translate('submit', activeLang.code),
+                        text: '(${translate('submit')}',
                         style: baseTranslation,
                       ),
                       TextSpan(
-                        text: translate('submitKey', activeLang.code),
+                        text: translate('submitKey'),
                         style: boldTranslation,
                       ),
                     ],
@@ -246,7 +255,7 @@ class InstructionsView extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  translate('how', activeLang.code),
+                  '${translate('how')})',
                   style: baseTranslation,
                 ),
               ],
@@ -256,11 +265,11 @@ class InstructionsView extends StatelessWidget {
             TextSpan(
               children: [
                 TextSpan(
-                  text: translate('wrong'),
+                  text: translate('wrong', activeLang.code),
                   style: baseStyle,
                 ),
                 TextSpan(
-                  text: translate('wrongValue'),
+                  text: translate('wrongValue', activeLang.code),
                   style: boldStyle,
                 ),
               ],
@@ -274,11 +283,11 @@ class InstructionsView extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: translate('wrong', activeLang.code),
+                        text: '(${translate('wrong')}',
                         style: baseTranslation,
                       ),
                       TextSpan(
-                        text: translate('wrongValue', activeLang.code),
+                        text: '${translate('wrongValue')})',
                         style: boldTranslation,
                       ),
                     ],
@@ -289,13 +298,16 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/wrong_$activeLang.png'),
           const SizedBox(height: 18),
-          Text(translate('index'), style: baseStyle),
+          Text(translate('index', activeLang.code), style: baseStyle),
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: translate('indexValue'), style: baseStyle),
                 TextSpan(
-                  text: translate('indexValue2'),
+                  text: translate('indexValue', activeLang.code),
+                  style: baseStyle,
+                ),
+                TextSpan(
+                  text: translate('indexValue2', activeLang.code),
                   style: boldStyle,
                 ),
               ],
@@ -308,7 +320,7 @@ class InstructionsView extends StatelessWidget {
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    translate('index', activeLang.code),
+                    '(${translate('index')}',
                     style: baseStyle,
                   ),
                 ),
@@ -316,11 +328,11 @@ class InstructionsView extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: translate('indexValue', activeLang.code),
+                        text: translate('indexValue'),
                         style: baseTranslation,
                       ),
                       TextSpan(
-                        text: translate('indexValue2', activeLang.code),
+                        text: '${translate('indexValue2')})',
                         style: boldTranslation,
                       ),
                     ],
@@ -334,9 +346,12 @@ class InstructionsView extends StatelessWidget {
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: translate('correct'), style: baseStyle),
                 TextSpan(
-                  text: translate('correctValue'),
+                  text: translate('correct', activeLang.code),
+                  style: baseStyle,
+                ),
+                TextSpan(
+                  text: translate('correctValue', activeLang.code),
                   style: boldStyle,
                 ),
               ],
@@ -350,11 +365,11 @@ class InstructionsView extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: translate('correct', activeLang.code),
+                        text: '(${translate('correct')}',
                         style: baseTranslation,
                       ),
                       TextSpan(
-                        text: translate('correctValue', activeLang.code),
+                        text: '${translate('correctValue')})',
                         style: boldTranslation,
                       ),
                     ],
@@ -365,23 +380,31 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/correct_$activeLang.png'),
           const SizedBox(height: 18),
-          Text(translate('word'), style: baseStyle),
+          Text(translate('word', activeLang.code), style: baseStyle),
           if (showTranslation)
             Column(
               children: [
                 const SizedBox(height: 8),
-                Text(translate('word', activeLang.code), style: baseTranslation),
+                Text(
+                  '(${translate('word')})',
+                  style: baseTranslation,
+                ),
               ],
             ),
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/win_$activeLang.png'),
           const SizedBox(height: 12),
-          Text(translate('tries'), style: baseStyle),
+          Text(translate('tries', activeLang.code), style: baseStyle),
           if (showTranslation)
             Column(
               children: [
                 const SizedBox(height: 8),
-                Text(translate('tries', activeLang.code), style: baseTranslation),
+                Text(
+                  '(${translate(
+                    'tries',
+                  )})',
+                  style: baseTranslation,
+                ),
               ],
             ),
         ],
