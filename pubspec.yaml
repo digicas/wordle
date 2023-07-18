@@ -12,7 +12,7 @@ dependencies:
   flutter_localization: ^0.1.12
   flutter_localizations:
     sdk: flutter
-  google_fonts: ^3.0.1
+  google_fonts: ^5.1.0
   intl: 0.18.0
   shared_preferences: ^2.0.15
 
