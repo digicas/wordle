@@ -573,7 +573,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                         const SizedBox(width: 4),
                                         Text(
                                           // '$guessedWordsCount',
-                                          AppLocale.hint.getString(context),
+                                          AppLocale.rules.getString(context),
                                           style: const TextStyle(
                                             fontSize: 20,
                                           ),
