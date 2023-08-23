@@ -39,7 +39,7 @@ class InstructionsView extends StatelessWidget {
   Map<String, Map<String, String>> get translations => {
         'cs': {
           'rules': 'Pravidla',
-          'info': 'Hádáte podstatné jméno 5 znaků dlouhé, které hra zná. Např.',
+          'info': 'Hádáte slovo 5 znaků dlouhé, které hra zná. Např.',
           'etc': 'apod.',
           'guess': 'Postupně zadávejte své tipy.',
           'undo': 'Mazat můžete klávesou ',
