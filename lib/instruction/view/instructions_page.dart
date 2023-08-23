@@ -33,7 +33,7 @@ class InstructionsView extends StatelessWidget {
       : activeLang == Language.czech
           ? 'SOSÁK, RYTÍŘ, OCHOZ'
           : activeLang == Language.english
-              ? 'TENIS, TABLE, CHAIR'
+              ? 'TABLE, CHAIR, HAPPY'
               : '';
 
   Map<String, Map<String, String>> get translations => {
@@ -80,23 +80,23 @@ class InstructionsView extends StatelessWidget {
         'en': {
           'rules': 'Rules',
           'info':
-              'You guess a noun 5 characters long that the game knows. For example.',
+              'Try to guess the 5 letter word. For example:',
           'etc': 'etc.',
-          'guess': 'Enter your tips one by one.',
-          'undo': 'You can delete by pressing ',
-          'undoKey': 'Backspace (⌫) ',
-          'submit': 'Confirm your picks with the key ',
-          'submitKey': 'Enter (⏎) ',
-          'how': 'The game evaluates and marks each guess: ',
-          'wrong': 'If the letters in the guess word ',
-          'wrongValue': 'are not:',
-          'index': 'Letters in the guess word ',
-          'indexValue': 'are ',
-          'indexValue2': 'but in a different position:',
-          'correct': 'Letters are ',
-          'correctValue': 'on a correct position:',
-          'word': 'Guessed Word:',
-          'tries': 'You have 6 tries.',
+          'guess': 'Enter your letter guesses one by one.',
+          'undo': ' You can delete a letter by pressing ',
+          'undoKey': 'Backspace (⌫)',
+          'submit': 'Confirm your guess with the key ',
+          'submitKey': 'Enter (⏎)',
+          'how': 'The game then marks each letter as correct, incorrect, or in the wrong position. ',
+          'wrong': 'If the letters in the guess are NOT in the word, they appear gray:',
+          'wrongValue': '',
+          'index': 'If the letters are in the word, but are in a different position, they appear orange:',
+          'indexValue': '',
+          'indexValue2': '',
+          'correct': 'If the letters are in the word and in the correct position, they appear green: ',
+          'correctValue': '',
+          'word': 'If you correctly guess the word, it will appear all green:',
+          'tries': 'You have 6 tries to guess the word.',
         }
       };
 
