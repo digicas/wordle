@@ -39,7 +39,7 @@ class InstructionsView extends StatelessWidget {
   Map<String, Map<String, String>> get translations => {
         'cs': {
           'rules': 'Pravidla',
-          'info': 'Hádáte slovo 5 znaků dlouhé, které hra zná. Např.',
+          'info': 'Hádáte slovo 5 znaků dlouhé, které hra zná. Např.:',
           'etc': 'apod.',
           'guess': 'Postupně zadávejte své tipy.',
           'undo': 'Mazat můžete klávesou ',
@@ -111,6 +111,7 @@ class InstructionsView extends StatelessWidget {
       child: Column(
         children: [
           Text.rich(
+            textAlign: TextAlign.center,
             TextSpan(
               children: [
                 TextSpan(
@@ -136,9 +137,11 @@ class InstructionsView extends StatelessWidget {
             translate('info', activeLang.code),
             maxLines: 4,
             style: baseStyle,
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text.rich(
+            textAlign: TextAlign.center,
             TextSpan(
               children: [
                 TextSpan(text: '$exampleWords, ', style: boldStyle),
@@ -156,9 +159,11 @@ class InstructionsView extends StatelessWidget {
                 Text(
                   '(${translate('info')}',
                   style: baseTranslation,
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text.rich(
+                  textAlign: TextAlign.center,
                   TextSpan(
                     children: [
                       TextSpan(text: '$exampleWords ', style: boldStyle),
@@ -175,6 +180,7 @@ class InstructionsView extends StatelessWidget {
           Text(
             translate('guess', activeLang.code),
             style: baseStyle,
+            textAlign: TextAlign.center,
           ),
           if (showTranslation)
             Column(
@@ -183,11 +189,13 @@ class InstructionsView extends StatelessWidget {
                 Text(
                   '(${translate('guess')})',
                   style: baseTranslation,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           const SizedBox(height: 8),
           Text.rich(
+            textAlign: TextAlign.center,
             TextSpan(
               children: [
                 TextSpan(
@@ -202,6 +210,7 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 4),
           if (showTranslation)
             Text.rich(
+              textAlign: TextAlign.center,
               TextSpan(
                 children: [
                   TextSpan(
@@ -217,6 +226,7 @@ class InstructionsView extends StatelessWidget {
             ),
           const SizedBox(height: 4),
           Text.rich(
+            textAlign: TextAlign.center,
             TextSpan(
               children: [
                 TextSpan(
@@ -234,12 +244,14 @@ class InstructionsView extends StatelessWidget {
           Text(
             translate('how', activeLang.code),
             style: baseStyle,
+            textAlign: TextAlign.center,
           ),
           if (showTranslation)
             Column(
               children: [
                 const SizedBox(height: 8),
                 Text.rich(
+                  textAlign: TextAlign.center,
                   TextSpan(
                     children: [
                       TextSpan(
@@ -257,11 +269,13 @@ class InstructionsView extends StatelessWidget {
                 Text(
                   '${translate('how')})',
                   style: baseTranslation,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           const SizedBox(height: 12),
           Text.rich(
+            textAlign: TextAlign.center,
             TextSpan(
               children: [
                 TextSpan(
@@ -280,6 +294,7 @@ class InstructionsView extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 Text.rich(
+                  textAlign: TextAlign.center,
                   TextSpan(
                     children: [
                       TextSpan(
@@ -298,8 +313,9 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/wrong_$activeLang.png'),
           const SizedBox(height: 18),
-          Text(translate('index', activeLang.code), style: baseStyle),
+          Text(translate('index', activeLang.code), style: baseStyle, textAlign: TextAlign.center,),
           Text.rich(
+            textAlign: TextAlign.center,
             TextSpan(
               children: [
                 TextSpan(
@@ -325,6 +341,7 @@ class InstructionsView extends StatelessWidget {
                   ),
                 ),
                 Text.rich(
+                  textAlign: TextAlign.center,
                   TextSpan(
                     children: [
                       TextSpan(
@@ -344,6 +361,7 @@ class InstructionsView extends StatelessWidget {
           Image.asset('packages/wordle/assets/wrong_index_$activeLang.png'),
           const SizedBox(height: 18),
           Text.rich(
+            textAlign: TextAlign.center,
             TextSpan(
               children: [
                 TextSpan(
@@ -362,6 +380,7 @@ class InstructionsView extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 Text.rich(
+                  textAlign: TextAlign.center,
                   TextSpan(
                     children: [
                       TextSpan(
@@ -380,7 +399,7 @@ class InstructionsView extends StatelessWidget {
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/correct_$activeLang.png'),
           const SizedBox(height: 18),
-          Text(translate('word', activeLang.code), style: baseStyle),
+          Text(translate('word', activeLang.code), style: baseStyle, textAlign: TextAlign.center,),
           if (showTranslation)
             Column(
               children: [
@@ -388,13 +407,14 @@ class InstructionsView extends StatelessWidget {
                 Text(
                   '(${translate('word')})',
                   style: baseTranslation,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           const SizedBox(height: 8),
           Image.asset('packages/wordle/assets/win_$activeLang.png'),
           const SizedBox(height: 12),
-          Text(translate('tries', activeLang.code), style: baseStyle),
+          Text(translate('tries', activeLang.code), style: baseStyle, textAlign: TextAlign.center,),
           if (showTranslation)
             Column(
               children: [
@@ -404,6 +424,7 @@ class InstructionsView extends StatelessWidget {
                     'tries',
                   )})',
                   style: baseTranslation,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
