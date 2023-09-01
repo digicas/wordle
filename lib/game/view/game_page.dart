@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     super.initState();
     readJson();
     _fetchCount();
+
+    _loadAnimationControllers();
+
+    tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
+  }
+
+  // ignore: unused_element
+
+  void _loadAnimationControllers() {
     final animationsList = <Animation<double>>[];
     animationControllers = List.generate(
       tilesCount * 6,
@@ -89,13 +102,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       },
     );
     shakeAnimations = animationsList;
-    tabController = TabController(
-      length: 2,
-      vsync: this,
-    );
-  }
 
-  // ignore: unused_element
+    print(shakeAnimations.length);
+  }
 
   Future<void> readJson() async {
     final answersFetch = await rootBundle
@@ -118,6 +127,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   Future<void> changeLanguage(Language lang) async {
+    _loadAnimationControllers();
+    await Future<void>.delayed(const Duration(milliseconds: 100));
     selectedLang = lang;
     await readJson();
     setState(resetGame);
